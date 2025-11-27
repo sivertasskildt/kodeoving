@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Treningsleir + AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .code-input {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            resize: vertical;
+            border: 1px solid #374151;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        .solution-box {
+            background-color: #f0fdf4;
+            /* Light green bg */
+            border-left: 4px solid #22c55e;
+            display: none;
+            /* Hidden by default */
+        }
+
+        .ai-feedback-box {
+            background-color: #eff6ff;
+            /* Light blue bg */
+            border-left: 4px solid #3b82f6;
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .code-display {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Markdown-like styling for AI response */
+        .ai-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-content code {
+            background-color: #e5e7eb;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.2rem;
+            font-family: monospace;
+            color: #d63384;
+        }
+
+        .ai-content pre {
+            background-color: #1f2937;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.3rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+
+<body class="pb-20">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 shadow-md mb-8">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold"><i class="fa-brands fa-python mr-2"></i> Python Treningsleir <span
+                        class="text-yellow-300 text-xl">+ AI ✨</span></h1>
+                <p class="opacity-90 mt-1">Løs oppgaven, få AI-hjelp, og bli en mester.</p>
+            </div>
+            <div class="hidden md:block text-right text-sm opacity-80">
+                Drevet av Gemini<br>Eksamensforberedelser
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 space-y-8">
+
+        <!-- Oppgave 1: Klasser -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Oppgave 1: Grunnleggende Klasse</h2>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">OOP</span>
+                </div>
+                <div class="mb-4 text-gray-700" id="desc1">
+                    Lag en klasse <code>Student</code>.
+                    <ul class="list-disc list-inside mt-2 ml-2 space-y-1">
+                        <li>Konstruktøren skal ta imot <code>navn</code> og <code>student_id</code>.</li>
+                        <li>Klassen skal ha en metode <code>vis_info()</code> som returnerer en streng: "Navn (ID)".
+                        </li>
+                        <li>Lag et objekt av klassen og print resultatet av metoden.</li>
+                    </ul>
+                </div>
+                <textarea id="input1" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="checkCodeWithAI(1)"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
+                    </button>
+                    <button onclick="toggleSolution('sol1', this)"
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                        <i class="fas fa-eye mr-2"></i> Se fasit
+                    </button>
+                </div>
+
+                <!-- AI Feedback Area -->
+                <div id="ai-feedback-1" class="ai-feedback-box">
+                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
+                    <div id="ai-content-1" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                </div>
+            </div>
+
+            <div id="sol1" class="solution-box p-6">
+                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
+                <pre class="code-display mb-4">
+class Student:
+    def __init__(self, navn, student_id):
+        self._navn = navn
+        self._student_id = student_id
+
+    def vis_info(self):
+        return f"{self._navn} ({self._student_id})"
+
+# Test programmet
+s1 = Student("Ola Nordmann", 12345)
+print(s1.vis_info())</pre>
+                <div class="text-gray-700 text-sm">
+                    <strong>Forklaring:</strong> Vi bruker <code>__init__</code> for å sette opp variablene når objektet
+                    lages. Variablene lagres med <code>self.</code> foran.
+                </div>
+            </div>
+        </div>
+
+        <!-- Oppgave 2: Lister og Løkker -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Oppgave 2: Filtrering av liste</h2>
+                    <span
+                        class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Lister</span>
+                </div>
+                <div class="mb-4 text-gray-700" id="desc2">
+                    Du har listen: <code>tall = [5, 12, 3, 20, 8, 7]</code>.
+                    <br>Skriv en funksjon (eller en løkke) som lager en <strong>ny liste</strong> som kun inneholder
+                    tallene som er større enn 10.
+                </div>
+                <textarea id="input2" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="checkCodeWithAI(2)"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
+                    </button>
+                    <button onclick="toggleSolution('sol2', this)"
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                        <i class="fas fa-eye mr-2"></i> Se fasit
+                    </button>
+                </div>
+
+                <div id="ai-feedback-2" class="ai-feedback-box">
+                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
+                    <div id="ai-content-2" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                </div>
+            </div>
+
+            <div id="sol2" class="solution-box p-6">
+                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
+                <pre class="code-display mb-4">
+tall = [5, 12, 3, 20, 8, 7]
+store_tall = []
+
+for t in tall:
+    if t > 10:
+        store_tall.append(t)
+
+print(store_tall) 
+# Utskrift blir: [12, 20]</pre>
+            </div>
+        </div>
+
+        <!-- Oppgave 3: Ordbøker -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Oppgave 3: Ordbok-sjekk</h2>
+                    <span
+                        class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Ordbøker</span>
+                </div>
+                <div class="mb-4 text-gray-700" id="desc3">
+                    Du har en ordbok med varer og pris: <code>priser = {"melk": 20, "brød": 35, "ost": 100}</code>.
+                    <br>Skriv kode som sjekker om "kaffe" finnes i ordboken. Hvis ikke, legg til "kaffe" med prisen 40.
+                    Til slutt, print alle varene og prisene pent.
+                </div>
+                <textarea id="input3" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="checkCodeWithAI(3)"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
+                    </button>
+                    <button onclick="toggleSolution('sol3', this)"
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                        <i class="fas fa-eye mr-2"></i> Se fasit
+                    </button>
+                </div>
+
+                <div id="ai-feedback-3" class="ai-feedback-box">
+                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
+                    <div id="ai-content-3" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                </div>
+            </div>
+
+            <div id="sol3" class="solution-box p-6">
+                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
+                <pre class="code-display mb-4">
+priser = {"melk": 20, "brød": 35, "ost": 100}
+
+if "kaffe" not in priser:
+    priser["kaffe"] = 40
+
+# Iterere gjennom ordbok
+for vare, pris in priser.items():
+    print(f"{vare} koster {pris} kr")</pre>
+            </div>
+        </div>
+
+        <!-- Oppgave 4: Filbehandling -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-xl font-bold text-gray-800">Oppgave 4: Lese fra fil</h2>
+                    <span
+                        class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Filbehandling</span>
+                </div>
+                <div class="mb-4 text-gray-700" id="desc4">
+                    Anta at du har en fil <code>tall.txt</code> som ser slik ut:
+                    <br><code>10</code><br><code>20</code><br><code>30</code>
+                    <br>Skriv et program som leser filen og regner ut <strong>summen</strong> av tallene.
+                </div>
+                <textarea id="input4" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="checkCodeWithAI(4)"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
+                    </button>
+                    <button onclick="toggleSolution('sol4', this)"
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                        <i class="fas fa-eye mr-2"></i> Se fasit
+                    </button>
+                </div>
+
+                <div id="ai-feedback-4" class="ai-feedback-box">
+                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
+                    <div id="ai-content-4" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                </div>
+            </div>
+
+            <div id="sol4" class="solution-box p-6">
+                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
+                <pre class="code-display mb-4">
+total_sum = 0
+try:
+    with open("tall.txt", "r") as fil:
+        for linje in fil:
+            total_sum += int(linje)
+    print(f"Summen er: {total_sum}")
+except FileNotFoundError:
+    print("Fant ikke filen.")</pre>
+            </div>
+        </div>
+
+        <!-- NEW AI FEATURE: Infinite Generator -->
+        <div
+            class="bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-lg shadow-xl overflow-hidden border border-gray-700">
+            <div class="p-8">
+                <div class="flex items-center mb-6">
+                    <div class="bg-indigo-500 p-3 rounded-full mr-4">
+                        <i class="fas fa-infinity text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">Uendelig Øvelses-generator ✨</h2>
+                        <p class="text-gray-400">Gått tom for oppgaver? La AI lage en ny til deg!</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="generateExercise('Lister og Løkker')"
+                        class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
+                        <h3 class="font-bold group-hover:text-indigo-400">📜 Lister & Løkker</h3>
+                        <p class="text-xs text-gray-400 mt-1">Mengdetrening</p>
+                    </button>
+                    <button onclick="generateExercise('Objektorientering')"
+                        class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
+                        <h3 class="font-bold group-hover:text-indigo-400">📦 Klasser (OOP)</h3>
+                        <p class="text-xs text-gray-400 mt-1">Struktur og arv</p>
+                    </button>
+                    <button onclick="generateExercise('Algoritmer og Logikk')"
+                        class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
+                        <h3 class="font-bold group-hover:text-indigo-400">🧠 Problemløsning</h3>
+                        <p class="text-xs text-gray-400 mt-1">Logiske nøtter</p>
+                    </button>
+                </div>
+
+                <!-- Generated Exercise Area -->
+                <div id="generated-container" class="hidden bg-gray-800 rounded-lg p-6 border border-gray-700">
+                    <h3 class="text-indigo-400 font-bold mb-2 uppercase text-sm tracking-wide">Din unike oppgave:</h3>
+                    <div id="generated-text" class="text-gray-200 mb-6 leading-relaxed"></div>
+
+                    <textarea id="generated-input" class="code-input mb-4"
+                        placeholder="# Løs oppgaven her..."></textarea>
+
+                    <button onclick="checkGeneratedCode()"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-indigo-500/30">
+                        <i class="fas fa-check-circle mr-2"></i> Sjekk min løsning
+                    </button>
+
+                    <div id="generated-feedback"
+                        class="mt-4 p-4 rounded bg-gray-900 border-l-4 border-indigo-500 hidden">
+                        <h4 class="font-bold text-indigo-400 mb-1">Tilbakemelding:</h4>
+                        <div id="generated-feedback-text" class="text-sm text-gray-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center text-gray-500 mt-12 mb-8">
+        <p>Lykke til med øvingen! 🚀</p>
+    </footer>
+
+    <script>
+
+
+        function toggleSolution(id, btn) {
+            const sol = document.getElementById(id);
+            if (sol.style.display === "block") {
+                sol.style.display = "none";
+                btn.innerHTML = '<i class="fas fa-eye mr-2"></i> Se fasit';
+                btn.classList.remove("bg-gray-600", "hover:bg-gray-700");
+                btn.classList.add("bg-gray-600", "hover:bg-gray-700"); // Keep gray but change text
+            } else {
+                sol.style.display = "block";
+                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i> Skjul fasit';
+            }
+        }
+
+        // --- GEMINI API HELPERS ---
+
+        async function callGemini(promptText) {
+            const url = '/api/generate';
+
+            const payload = {
+                contents: [{
+                    parts: [{ text: promptText }]
+                }]
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error("Gemini Error:", error);
+                return "Beklager, jeg klarte ikke å kontakte AI-hjernen akkurat nå. Prøv igjen senere.";
+            }
+        }
+
+        // --- FEATURES ---
+
+        async function checkCodeWithAI(id) {
+            const userCode = document.getElementById(`input${id}`).value;
+            const description = document.getElementById(`desc${id}`).innerText;
+            const feedbackBox = document.getElementById(`ai-feedback-${id}`);
+            const contentBox = document.getElementById(`ai-content-${id}`);
+            const btn = event.target; // The button clicked
+
+            if (!userCode.trim()) {
+                alert("Du må skrive litt kode før jeg kan sjekke den!");
+                return;
+            }
+
+            // UI Loading State
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading-spinner"></span> Tenker...';
+            btn.disabled = true;
+            feedbackBox.style.display = 'none';
+
+            const prompt = `
+            Du er en vennlig og pedagogisk Python-lærer for en nybegynner.
+            Språk: Norsk.
+            
+            Oppgaven studenten prøver å løse er: "${description}"
+            
+            Studentens kode er:
+            """
+            ${userCode}
+            """
+            
+            Gi kort og konsis tilbakemelding.
+            1. Hvis koden er riktig: Gi ros og nevn kort hvorfor den er bra.
+            2. Hvis det er feil: Forklar feilen enkelt uten å gi hele fasiten med en gang. Gi et hint.
+            3. Ikke bruk markdown for overskrifter, bruk ren tekst eller enkle punkter. Du kan bruke markdown code blocks for små eksempler.
+            `;
+
+            const reply = await callGemini(prompt);
+
+            // Render output
+            contentBox.innerHTML = formatAIResponse(reply);
+            feedbackBox.style.display = 'block';
+
+            // Reset UI
+            btn.innerHTML = originalBtnText;
+            btn.disabled = false;
+        }
+
+        async function generateExercise(topic) {
+            const container = document.getElementById('generated-container');
+            const textArea = document.getElementById('generated-text');
+            const feedbackArea = document.getElementById('generated-feedback');
+
+            // Show loading in text area
+            container.classList.remove('hidden');
+            textArea.innerHTML = '<div class="flex items-center text-indigo-300"><span class="loading-spinner"></span> Genererer en unik oppgave om ' + topic + '...</div>';
+            feedbackArea.classList.add('hidden');
+            document.getElementById('generated-input').value = '';
+
+            const prompt = `
+            Lag en kort, nybegynnervennlig Python-oppgave om temaet: "${topic}".
+            Språk: Norsk.
+            Ikke inkluder løsningen, kun oppgaveteksten.
+            Oppgaveteksten skal være tydelig og konkret.
+            `;
+
+            const exerciseText = await callGemini(prompt);
+
+            // Store the exercise text in a data attribute so we can validate against it later
+            container.dataset.currentTask = exerciseText;
+
+            textArea.innerHTML = formatAIResponse(exerciseText);
+        }
+
+        async function checkGeneratedCode() {
+            const userCode = document.getElementById('generated-input').value;
+            const taskDescription = document.getElementById('generated-container').dataset.currentTask;
+            const feedbackArea = document.getElementById('generated-feedback');
+            const feedbackText = document.getElementById('generated-feedback-text');
+            const btn = event.target;
+
+            if (!userCode.trim()) {
+                alert("Skriv løsningen din først!");
+                return;
+            }
+
+            const originalBtnText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading-spinner"></span> Sjekker...';
+            btn.disabled = true;
+
+            const prompt = `
+            Du er en Python-lærer.
+            Oppgaven var: "${taskDescription}"
+            Studentens forslag: 
+            """
+            ${userCode}
+            """
+            
+            Er dette en gyldig løsning? Svar på norsk. Vær oppmuntrende.
+            `;
+
+            const reply = await callGemini(prompt);
+
+            feedbackText.innerHTML = formatAIResponse(reply);
+            feedbackArea.classList.remove('hidden');
+
+            btn.innerHTML = originalBtnText;
+            btn.disabled = false;
+        }
+
+        function formatAIResponse(text) {
+            // Simple formatter to make Gemini text look okay in HTML
+            // 1. Convert newlines to <br>
+            // 2. Wrap code blocks in <pre> styling (basic detection)
+
+            let formatted = text
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+            // Bold
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            // Code blocks ```code```
+            formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-800 p-2 rounded text-gray-200 text-xs my-2 overflow-x-auto">$1</pre>');
+
+            // Inline code `code`
+            formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-gray-200 text-pink-600 px-1 rounded font-mono text-sm">$1</code>');
+
+            // Line breaks
+            formatted = formatted.replace(/\n/g, '<br>');
+
+            return formatted;
+        }
+
+    </script>
+</body>
+
+</html>
