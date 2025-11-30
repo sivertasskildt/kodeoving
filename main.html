@@ -14,15 +14,22 @@
         }
 
         .code-input {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             background-color: #1e1e1e;
             color: #d4d4d4;
             width: 100%;
             min-height: 150px;
+            max-height: 450px;
+            /* Max 3x height */
             padding: 1rem;
             border-radius: 0.5rem;
-            resize: vertical;
+            resize: none;
+            /* Disable manual resize to avoid conflicts */
             border: 1px solid #374151;
+            overflow-y: hidden;
+            /* Hide scrollbar initially */
+            line-height: 1.3;
+            /* Tighter line spacing */
         }
 
         .code-input:focus {
@@ -118,263 +125,673 @@
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 space-y-8">
 
-        <!-- Oppgave 1: Klasser -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Oppgave 1: Grunnleggende Klasse</h2>
-                    <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">OOP</span>
-                </div>
-                <div class="mb-4 text-gray-700" id="desc1">
-                    Lag en klasse <code>Student</code>.
-                    <ul class="list-disc list-inside mt-2 ml-2 space-y-1">
-                        <li>Konstruktøren skal ta imot <code>navn</code> og <code>student_id</code>.</li>
-                        <li>Klassen skal ha en metode <code>vis_info()</code> som returnerer en streng: "Navn (ID)".
-                        </li>
-                        <li>Lag et objekt av klassen og print resultatet av metoden.</li>
-                    </ul>
-                </div>
-                <textarea id="input1" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
-
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="checkCodeWithAI(1)"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
-                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
-                    </button>
-                    <button onclick="toggleSolution('sol1', this)"
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
-                        <i class="fas fa-eye mr-2"></i> Se fasit
-                    </button>
-                </div>
-
-                <!-- AI Feedback Area -->
-                <div id="ai-feedback-1" class="ai-feedback-box">
-                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
-                    <div id="ai-content-1" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
-                </div>
-            </div>
-
-            <div id="sol1" class="solution-box p-6">
-                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
-                <pre class="code-display mb-4">
-class Student:
-    def __init__(self, navn, student_id):
-        self._navn = navn
-        self._student_id = student_id
-
-    def vis_info(self):
-        return f"{self._navn} ({self._student_id})"
-
-# Test programmet
-s1 = Student("Ola Nordmann", 12345)
-print(s1.vis_info())</pre>
-                <div class="text-gray-700 text-sm">
-                    <strong>Forklaring:</strong> Vi bruker <code>__init__</code> for å sette opp variablene når objektet
-                    lages. Variablene lagres med <code>self.</code> foran.
-                </div>
+        <!-- Tab Navigation -->
+        <div class="flex justify-center mb-8">
+            <div class="bg-white rounded-lg shadow-md p-1 inline-flex">
+                <button onclick="showSection('premade')" id="tab-premade"
+                    class="px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-indigo-600 text-white shadow-sm">
+                    <i class="fas fa-list-ol mr-2"></i> Ferdige oppgaver
+                </button>
+                <button onclick="showSection('generator')" id="tab-generator"
+                    class="px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-infinity mr-2"></i> Generator
+                </button>
             </div>
         </div>
 
-        <!-- Oppgave 2: Lister og Løkker -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Oppgave 2: Filtrering av liste</h2>
-                    <span
-                        class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Lister</span>
-                </div>
-                <div class="mb-4 text-gray-700" id="desc2">
-                    Du har listen: <code>tall = [5, 12, 3, 20, 8, 7]</code>.
-                    <br>Skriv en funksjon (eller en løkke) som lager en <strong>ny liste</strong> som kun inneholder
-                    tallene som er større enn 10.
-                </div>
-                <textarea id="input2" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
+        <!-- Section: Premade Exercises -->
+        <div id="premade-section" class="space-y-8">
+            <!-- Exercises will be injected here by JavaScript -->
+            <div id="exercise-container" class="space-y-8"></div>
+        </div> <!-- End premade-section -->
 
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="checkCodeWithAI(2)"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
-                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
-                    </button>
-                    <button onclick="toggleSolution('sol2', this)"
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
-                        <i class="fas fa-eye mr-2"></i> Se fasit
-                    </button>
-                </div>
-
-                <div id="ai-feedback-2" class="ai-feedback-box">
-                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
-                    <div id="ai-content-2" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
-                </div>
-            </div>
-
-            <div id="sol2" class="solution-box p-6">
-                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
-                <pre class="code-display mb-4">
-tall = [5, 12, 3, 20, 8, 7]
-store_tall = []
-
-for t in tall:
-    if t > 10:
-        store_tall.append(t)
-
-print(store_tall) 
-# Utskrift blir: [12, 20]</pre>
-            </div>
-        </div>
-
-        <!-- Oppgave 3: Ordbøker -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Oppgave 3: Ordbok-sjekk</h2>
-                    <span
-                        class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Ordbøker</span>
-                </div>
-                <div class="mb-4 text-gray-700" id="desc3">
-                    Du har en ordbok med varer og pris: <code>priser = {"melk": 20, "brød": 35, "ost": 100}</code>.
-                    <br>Skriv kode som sjekker om "kaffe" finnes i ordboken. Hvis ikke, legg til "kaffe" med prisen 40.
-                    Til slutt, print alle varene og prisene pent.
-                </div>
-                <textarea id="input3" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
-
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="checkCodeWithAI(3)"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
-                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
-                    </button>
-                    <button onclick="toggleSolution('sol3', this)"
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
-                        <i class="fas fa-eye mr-2"></i> Se fasit
-                    </button>
-                </div>
-
-                <div id="ai-feedback-3" class="ai-feedback-box">
-                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
-                    <div id="ai-content-3" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
-                </div>
-            </div>
-
-            <div id="sol3" class="solution-box p-6">
-                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
-                <pre class="code-display mb-4">
-priser = {"melk": 20, "brød": 35, "ost": 100}
-
-if "kaffe" not in priser:
-    priser["kaffe"] = 40
-
-# Iterere gjennom ordbok
-for vare, pris in priser.items():
-    print(f"{vare} koster {pris} kr")</pre>
-            </div>
-        </div>
-
-        <!-- Oppgave 4: Filbehandling -->
-        <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="text-xl font-bold text-gray-800">Oppgave 4: Lese fra fil</h2>
-                    <span
-                        class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Filbehandling</span>
-                </div>
-                <div class="mb-4 text-gray-700" id="desc4">
-                    Anta at du har en fil <code>tall.txt</code> som ser slik ut:
-                    <br><code>10</code><br><code>20</code><br><code>30</code>
-                    <br>Skriv et program som leser filen og regner ut <strong>summen</strong> av tallene.
-                </div>
-                <textarea id="input4" class="code-input mb-4" placeholder="# Skriv din kode her..."></textarea>
-
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="checkCodeWithAI(4)"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
-                        <i class="fas fa-magic mr-2"></i> ✨ Sjekk svaret mitt
-                    </button>
-                    <button onclick="toggleSolution('sol4', this)"
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
-                        <i class="fas fa-eye mr-2"></i> Se fasit
-                    </button>
-                </div>
-
-                <div id="ai-feedback-4" class="ai-feedback-box">
-                    <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
-                    <div id="ai-content-4" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
-                </div>
-            </div>
-
-            <div id="sol4" class="solution-box p-6">
-                <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
-                <pre class="code-display mb-4">
-total_sum = 0
-try:
-    with open("tall.txt", "r") as fil:
-        for linje in fil:
-            total_sum += int(linje)
-    print(f"Summen er: {total_sum}")
-except FileNotFoundError:
-    print("Fant ikke filen.")</pre>
-            </div>
-        </div>
-
-        <!-- NEW AI FEATURE: Infinite Generator -->
-        <div
-            class="bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-lg shadow-xl overflow-hidden border border-gray-700">
-            <div class="p-8">
-                <div class="flex items-center mb-6">
-                    <div class="bg-indigo-500 p-3 rounded-full mr-4">
-                        <i class="fas fa-infinity text-2xl"></i>
+        <!-- Section: Generator -->
+        <div id="generator-section" class="hidden space-y-8">
+            <!-- NEW AI FEATURE: Infinite Generator -->
+            <div
+                class="bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-lg shadow-xl overflow-hidden border border-gray-700">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-indigo-500 p-3 rounded-full mr-4">
+                            <i class="fas fa-infinity text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold">Uendelig Øvelses-generator ✨</h2>
+                            <p class="text-gray-400">Gått tom for oppgaver? La AI lage en ny til deg!</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-2xl font-bold">Uendelig Øvelses-generator ✨</h2>
-                        <p class="text-gray-400">Gått tom for oppgaver? La AI lage en ny til deg!</p>
+
+                    <div class="mb-6">
+                        <label class="block text-indigo-300 text-sm font-bold mb-2" for="difficulty">
+                            Velg vanskelighetsgrad:
+                        </label>
+                        <select id="difficulty"
+                            class="block w-full bg-gray-700 border border-gray-600 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-gray-600 focus:border-indigo-500">
+                            <option value="Lett">🟢 Lett (Nybegynner)</option>
+                            <option value="Medium" selected>🟡 Medium (Litt utfordring)</option>
+                            <option value="Vanskelig">🔴 Vanskelig (Ekspert)</option>
+                            <option value="Ekstra Vanskelig">💀 Ekstra Vanskelig (Eksamen+)</option>
+                        </select>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <button onclick="generateExercise('Lister og Løkker')"
-                        class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
-                        <h3 class="font-bold group-hover:text-indigo-400">📜 Lister & Løkker</h3>
-                        <p class="text-xs text-gray-400 mt-1">Mengdetrening</p>
-                    </button>
-                    <button onclick="generateExercise('Objektorientering')"
-                        class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
-                        <h3 class="font-bold group-hover:text-indigo-400">📦 Klasser (OOP)</h3>
-                        <p class="text-xs text-gray-400 mt-1">Struktur og arv</p>
-                    </button>
-                    <button onclick="generateExercise('Algoritmer og Logikk')"
-                        class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
-                        <h3 class="font-bold group-hover:text-indigo-400">🧠 Problemløsning</h3>
-                        <p class="text-xs text-gray-400 mt-1">Logiske nøtter</p>
-                    </button>
-                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <button onclick="generateExercise('Lister og Løkker')"
+                            class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
+                            <h3 class="font-bold group-hover:text-indigo-400">📜 Lister & Løkker</h3>
+                            <p class="text-xs text-gray-400 mt-1">Mengdetrening</p>
+                        </button>
+                        <button onclick="generateExercise('Objektorientering')"
+                            class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
+                            <h3 class="font-bold group-hover:text-indigo-400">📦 Klasser (OOP)</h3>
+                            <p class="text-xs text-gray-400 mt-1">Struktur og arv</p>
+                        </button>
+                        <button onclick="generateExercise('Algoritmer og Logikk')"
+                            class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-indigo-400 group">
+                            <h3 class="font-bold group-hover:text-indigo-400">🧠 Problemløsning</h3>
+                            <p class="text-xs text-gray-400 mt-1">Logiske nøtter</p>
+                        </button>
+                    </div>
 
-                <!-- Generated Exercise Area -->
-                <div id="generated-container" class="hidden bg-gray-800 rounded-lg p-6 border border-gray-700">
-                    <h3 class="text-indigo-400 font-bold mb-2 uppercase text-sm tracking-wide">Din unike oppgave:</h3>
-                    <div id="generated-text" class="text-gray-200 mb-6 leading-relaxed"></div>
+                    <!-- Generated Exercise Area -->
+                    <div id="generated-container" class="hidden bg-gray-800 rounded-lg p-6 border border-gray-700">
+                        <h3 class="text-indigo-400 font-bold mb-2 uppercase text-sm tracking-wide">Din unike oppgave:
+                        </h3>
+                        <div id="generated-text" class="text-gray-200 mb-6 leading-relaxed"></div>
 
-                    <textarea id="generated-input" class="code-input mb-4"
-                        placeholder="# Løs oppgaven her..."></textarea>
+                        <textarea id="generated-input" class="code-input mb-4"
+                            placeholder="# Løs oppgaven her..."></textarea>
 
-                    <button onclick="checkGeneratedCode()"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-indigo-500/30">
-                        <i class="fas fa-check-circle mr-2"></i> Sjekk min løsning
-                    </button>
+                        <button onclick="checkGeneratedCode()"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-indigo-500/30">
+                            <i class="fas fa-check-circle mr-2"></i> Sjekk min løsning
+                        </button>
 
-                    <div id="generated-feedback"
-                        class="mt-4 p-4 rounded bg-gray-900 border-l-4 border-indigo-500 hidden">
-                        <h4 class="font-bold text-indigo-400 mb-1">Tilbakemelding:</h4>
-                        <div id="generated-feedback-text" class="text-sm text-gray-300"></div>
+                        <div id="generated-feedback"
+                            class="mt-4 p-4 rounded bg-gray-900 border-l-4 border-indigo-500 hidden">
+                            <h4 class="font-bold text-indigo-400 mb-1">Tilbakemelding:</h4>
+                            <div id="generated-feedback-text" class="text-sm text-gray-300"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div> <!-- End generator-section -->
     </main>
 
     <footer class="text-center text-gray-500 mt-12 mb-8">
         <p>Lykke til med øvingen! 🚀</p>
+        <p>© 2025 Sivert Asskildt. Alle rettigheter reservert.</p>
     </footer>
 
     <script>
+        // --- EXERCISE DATA (IN1000 EKSAMENSNIVÅ) ---
+        const exercises = [
+            {
+                id: 1,
+                title: "Dyrejakt (Logikk)",
+                topic: "Eksamen 2024",
+                difficulty: "Lett",
+                description: `Lag en funksjon <code>jages(dyreliste)</code> som returnerer <code>True</code> hvis listen inneholder både "katt" og "hund", ELLER både "mus" og "katt". Ellers returner <code>False</code>.
+                <br>Eksempel: <code>['mus', 'katt']</code> -> True. <code>['mus', 'hund']</code> -> False.`,
+                solution: `def jages(dyreliste):\n    if "katt" in dyreliste and "hund" in dyreliste:\n        return True\n    if "mus" in dyreliste and "katt" in dyreliste:\n        return True\n    return False\n\nprint(jages(['mus', 'katt']))`
+            },
+            {
+                id: 2,
+                title: "Flertall (Ordbok)",
+                topic: "Eksamen 2024",
+                difficulty: "Medium",
+                description: `Lag en funksjon <code>flertall(dyreliste)</code> som finner hvilket dyr det er flest av.
+                <br>Returner navnet på dyret. Hvis det er uavgjort mellom to eller flere, returner "uavgjort".
+                <br>Eksempel: <code>['ulv', 'sau', 'ulv']</code> -> 'ulv'.`,
+                solution: `def flertall(dyreliste):\n    telling = {}\n    for dyr in dyreliste:\n        telling[dyr] = telling.get(dyr, 0) + 1\n    \n    maks = 0\n    vinner = "uavgjort"\n    \n    for dyr, antall in telling.items():\n        if antall > maks:\n            maks = antall\n            vinner = dyr\n        elif antall == maks:\n            vinner = "uavgjort"\n            \n    return vinner\n\nprint(flertall(['ulv', 'sau', 'ulv']))`
+            },
+            {
+                id: 3,
+                title: "Felles Tall (Nøstede Lister)",
+                topic: "Eksamen 2024",
+                difficulty: "Medium",
+                description: `Lag en funksjon <code>felles(tall_lister)</code> som tar inn en liste av lister med tall.
+                <br>Funksjonen skal returnere en liste med de tallene som finnes i MER enn én av underlistene.
+                <br>Eksempel: <code>[[1, 10], [5, 6, 10], [2, 3, 6]]</code> -> <code>[10, 6]</code> (rekkefølge er ikke viktig).`,
+                solution: `def felles(tall_lister):\n    sett = []\n    felles_tall = []\n    for liste in tall_lister:\n        for tall in liste:\n            if tall in sett and tall not in felles_tall:\n                felles_tall.append(tall)\n            sett.append(tall)\n    return felles_tall\n\nprint(felles([[1, 10], [5, 6, 10], [2, 3, 6]]))`
+            },
+            {
+                id: 4,
+                title: "Barnehage (Klasser)",
+                topic: "Eksamen 2022",
+                difficulty: "Medium",
+                description: `1. Lag klassen <code>Person</code> med <code>alder</code>. Metode <code>bursdag()</code> øker alder med 1.
+                <br>2. Lag klassen <code>Barnehage</code> som tar inn et <code>Person</code>-objekt (et barn) i konstruktøren.
+                <br>3. <code>Barnehage</code> skal ha en metode <code>bursdag()</code> som kaller bursdag på barnet.
+                <br>Test systemet.`,
+                solution: `class Person:\n    def __init__(self, alder):\n        self.alder = alder\n    def bursdag(self):\n        self.alder += 1\n\nclass Barnehage:\n    def __init__(self, barn):\n        self.barn = barn\n    def bursdag(self):\n        self.barn.bursdag()\n\np = Person(2)\nb = Barnehage(p)\nb.bursdag()\nprint(p.alder) # Skal bli 3`
+            },
+            {
+                id: 5,
+                title: "Adskilte Lister",
+                topic: "Eksamen 2024",
+                difficulty: "Hard",
+                description: `Lag en funksjon <code>adskilt(tall_lister)</code>. Den skal returnere <code>True</code> hvis det finnes to lister A og B i inputen slik at ALLE tall i A er større enn ALLE tall i B.
+                <br>Ellers returner <code>False</code>.
+                <br>Tips: Du kan bruke <code>min()</code> og <code>max()</code>.`,
+                solution: `def adskilt(tall_lister):\n    for liste1 in tall_lister:\n        for liste2 in tall_lister:\n            if liste1 == liste2: continue\n            if min(liste1) > max(liste2):\n                return True\n    return False\n\nprint(adskilt([[1, 10], [6, 8], [2, 3]])) # True fordi [6,8] > [2,3]`
+            },
+            {
+                id: 6,
+                title: "Utvidet Jakt (Ordbok)",
+                topic: "Eksamen 2024",
+                difficulty: "Hard",
+                description: `Lag funksjonen <code>utvidet_jages(dyreliste, jaging)</code>.
+                <br><code>jaging</code> er en ordbok der nøkkel jager verdi (f.eks. {'ulv': 'sau'}).
+                <br>Returner <code>True</code> hvis dyrelisten inneholder både et rovdyr og byttet dets (altså både nøkkel og verdi fra ordboken).`,
+                solution: `def utvidet_jages(dyreliste, jaging):\n    for rovdyr, bytte in jaging.items():\n        if rovdyr in dyreliste and bytte in dyreliste:\n            return True\n    return False\n\nprint(utvidet_jages(['ulv', 'sau'], {'ulv': 'sau'}))`
+            },
+            {
+                id: 7,
+                title: "Bussbillett (Klasser)",
+                topic: "Eksamen Sim",
+                difficulty: "Medium",
+                description: `Lag en klasse <code>Billett</code> med pris.
+                <br>Lag subklasser <code>Barnebillett</code> (halv pris) og <code>Honnør</code> (70% rabatt).
+                <br>Lag en funksjon som tar en liste billetter og regner ut totalpris.`,
+                solution: `class Billett:\n    def __init__(self, pris):\n        self.pris = pris\n    def hent_pris(self):\n        return self.pris\n\nclass Barn(Billett):\n    def hent_pris(self):\n        return self.pris * 0.5\n\nclass Honnør(Billett):\n    def hent_pris(self):\n        return self.pris * 0.3\n\nbilletter = [Billett(100), Barn(100), Honnør(100)]\ntotal = sum(b.hent_pris() for b in billetter)\nprint(total)`
+            },
+            {
+                id: 8,
+                title: "CSV til Ordbok",
+                topic: "Filbehandling",
+                difficulty: "Hard",
+                description: `Du har en fil <code>varer.csv</code>: "Vare,Pris\\nMelk,20\\nBrød,30".
+                <br>Skriv en funksjon som leser filen og returnerer en ordbok: <code>{'Melk': 20, 'Brød': 30}</code>.
+                <br>Husk å konvertere pris til heltall.`,
+                solution: `def les_varer(filnavn):\n    varer = {}\n    try:\n        with open(filnavn, 'r') as f:\n            next(f) # Hopp over overskrift\n            for linje in f:\n                deler = linje.strip().split(',')\n                varer[deler[0]] = int(deler[1])\n    except: pass\n    return varer`
+            },
+            {
+                id: 9,
+                title: "Matrise-summering",
+                topic: "Nøstede Lister",
+                difficulty: "Hard",
+                description: `Lag en funksjon som tar en matrise (liste av lister) og returnerer en ny liste med summen av hver rad.
+                <br>Eksempel: <code>[[1, 2], [3, 4]]</code> -> <code>[3, 7]</code>.`,
+                solution: `def rad_summer(matrise):\n    resultat = []\n    for rad in matrise:\n        resultat.append(sum(rad))\n    return resultat\n\nprint(rad_summer([[1, 2], [3, 4]]))`
+            },
+            {
+                id: 10,
+                title: "Unike Ord i Fil",
+                topic: "Fil + Mengder",
+                difficulty: "Hard",
+                description: `Lag et program som leser en tekstfil, splitter den opp i ord, og printer antall <strong>unike</strong> ord (bruk set).
+                <br>Ignorer store/små bokstaver.`,
+                solution: `def unike_ord(filnavn):\n    unike = set()\n    try:\n        with open(filnavn, 'r') as f:\n            for linje in f:\n                for ord in linje.split():\n                    unike.add(ord.lower())\n        print(len(unike))\n    except: print("Feil")`
+            },
+            {
+                id: 11,
+                title: "Hybelhus (Større System)",
+                topic: "OOP",
+                difficulty: "Hard",
+                description: `Dette er en større oppgave hvor du skal modellere utleie av hybler.
+                <br><strong>1. Klassen Hybel:</strong>
+                <br>- Konstruktør: Skal ta imot <code>pris</code>. Hybelen starter uten leietaker (<code>self.leietaker = None</code>).
+                <br>- <code>lei_ut(navn)</code>: Hvis hybelen er ledig, sett leietaker til <code>navn</code>. Hvis opptatt, print en feilmelding.
+                <br>- <code>si_opp()</code>: Fjern leietakeren (sett til None).
+                <br><strong>2. Klassen Hybelhus:</strong>
+                <br>- Konstruktør: Tar inn <code>antall</code> hybler og <code>pris</code>. Opprett en liste med <em>antall</em> Hybel-objekter.
+                <br>- <code>total_inntekt()</code>: Gå gjennom alle hybler og returner summen av prisen for de som er utleid.
+                <br>- <code>ledige_hybler()</code>: Returner antall hybler som ikke har leietaker.`,
+                solution: `class Hybel:\n    def __init__(self, pris):\n        self.pris = pris\n        self.leietaker = None\n\n    def lei_ut(self, navn):\n        if self.leietaker is None:\n            self.leietaker = navn\n            print(f"Leid ut til {navn}")\n        else:\n            print("Allerede utleid")\n\n    def si_opp(self):\n        self.leietaker = None\n\nclass Hybelhus:\n    def __init__(self, antall, pris):\n        self.hybler = []\n        for i in range(antall):\n            self.hybler.append(Hybel(pris))\n\n    def total_inntekt(self):\n        sum_inntekt = 0\n        for h in self.hybler:\n            if h.leietaker is not None:\n                sum_inntekt += h.pris\n        return sum_inntekt\n\n    def ledige_hybler(self):\n        antall = 0\n        for h in self.hybler:\n            if h.leietaker is None:\n                antall += 1\n        return antall\n\n# Test\nhus = Hybelhus(5, 5000)\nhus.hybler[0].lei_ut("Ola")\nhus.hybler[1].lei_ut("Kari")\nprint(f"Inntekt: {hus.total_inntekt()}")\nprint(f"Ledige: {hus.ledige_hybler()}")`
+            },
+            {
+                id: 12,
+                title: "Spilleliste (OOP + Lister)",
+                topic: "OOP",
+                difficulty: "Medium",
+                description: `Lag et system for å håndtere musikk.
+                <br><strong>1. Klassen Sang:</strong>
+                <br>- Skal ha egenskapene <code>tittel</code> og <code>artist</code>.
+                <br><strong>2. Klassen Spilleliste:</strong>
+                <br>- Skal ha et <code>navn</code> og en tom liste for sanger.
+                <br>- <code>legg_til(sang)</code>: Tar et Sang-objekt og legger det i listen.
+                <br>- <code>spill_alle()</code>: Løper gjennom listen og printer "Spiller {tittel} av {artist}".
+                <br>- <code>finn_artist(navn)</code>: Returnerer en <strong>ny liste</strong> med alle Sang-objekter som har denne artisten.`,
+                solution: `class Sang:\n    def __init__(self, tittel, artist):\n        self.tittel = tittel\n        self.artist = artist\n\nclass Spilleliste:\n    def __init__(self, navn):\n        self.navn = navn\n        self.sanger = []\n\n    def legg_til(self, sang):\n        self.sanger.append(sang)\n\n    def spill_alle(self):\n        for s in self.sanger:\n            print(f"Spiller {s.tittel} av {s.artist}")\n\n    def finn_artist(self, navn):\n        treff = []\n        for s in self.sanger:\n            if s.artist == navn:\n                treff.append(s)\n        return treff\n\n# Test\nliste = Spilleliste("Favoritter")\nliste.legg_til(Sang("Hello", "Adele"))\nliste.legg_til(Sang("Someone Like You", "Adele"))\nliste.legg_til(Sang("Thriller", "MJ"))\nliste.spill_alle()\nprint(f"Adele sanger: {len(liste.finn_artist('Adele'))}")`
+            },
+            {
+                id: 13,
+                title: "Bokhandel (Filbehandling + OOP)",
+                topic: "Filbehandling",
+                difficulty: "Hard",
+                description: `Du skal lese inn bøker fra en fil og analysere dem.
+                <br>Filformatet i <code>boker.txt</code> er: <em>Tittel;Forfatter;Pris</em> (semikolon-separert).
+                <br><strong>Oppgave:</strong>
+                <br>1. Lag klassen <code>Bok</code> med tittel, forfatter og pris.
+                <br>2. Les filen linje for linje. For hver linje:
+                <br>   - Split linjen på ";".
+                <br>   - Opprett et Bok-objekt (husk å konvertere pris til <code>int</code>).
+                <br>   - Legg boken i en liste.
+                <br>3. Regn ut og print den totale verdien av alle bøkene i listen.`,
+                solution: `class Bok:\n    def __init__(self, tittel, forfatter, pris):\n        self.tittel = tittel\n        self.forfatter = forfatter\n        self.pris = pris\n\nboker = []\ndata = "Sult;Hamsun;299\\nMarkens Grøde;Hamsun;199\\nEt Dukkehjem;Ibsen;150" # Simulert fil\n\nfor linje in data.split("\\n"):\n    biter = linje.split(";")\n    boker.append(Bok(biter[0], biter[1], int(biter[2])))\n\ntotal = sum(b.pris for b in boker)\nprint(f"Total verdi: {total}")\n\n# Bonus: Finne forfatter med flest\ntelling = {}\nfor b in boker:\n    telling[b.forfatter] = telling.get(b.forfatter, 0) + 1\n\nprint(telling)`
+            },
+            {
+                id: 14,
+                title: "Sudoku-sjekk (Nøstede Lister)",
+                topic: "Algoritmer",
+                difficulty: "Hard",
+                description: `I Sudoku må hver rekke inneholde tallene 1-9 nøyaktig én gang.
+                <br>Lag funksjonen <code>sjekk_rekke(rekke)</code> som tar inn en liste med 9 tall.
+                <br>Funksjonen skal returnere <code>True</code> KUN hvis:
+                <br>- Listen har lengde 9.
+                <br>- Alle tallene er mellom 1 og 9.
+                <br>- Ingen tall gjentas (alle er unike).
+                <br>Tips: En mengde (<code>set</code>) fjerner duplikater automatisk.`,
+                solution: `def sjekk_rekke(rekke):\n    if len(rekke) != 9:\n        return False\n    \n    sjekk = set(rekke)\n    # Sjekk at vi har 9 unike tall og at alle er mellom 1 og 9\n    if len(sjekk) == 9 and min(rekke) >= 1 and max(rekke) <= 9:\n        return True\n    return False\n\nprint(sjekk_rekke([1,2,3,4,5,6,7,8,9])) # True\nprint(sjekk_rekke([1,1,3,4,5,6,7,8,9])) # False`
+            },
+            {
+                id: 15,
+                title: "Varelager (Ordbok + Funksjoner)",
+                topic: "Ordbøker",
+                difficulty: "Medium",
+                description: `Lag et lagersystem ved hjelp av en ordbok: <code>lager = {"epler": 50, "bananer": 20}</code>.
+                <br>Implementer to funksjoner:
+                <br>1. <code>kjop(vare, antall)</code>: Legg til antall i lageret. Hvis varen ikke finnes fra før, må den opprettes.
+                <br>2. <code>selg(vare, antall)</code>: Trekk fra antall.
+                <br>   - <strong>Viktig:</strong> Sjekk først om varen finnes OG om det er nok på lager.
+                <br>   - Hvis ikke, print en feilmelding og ikke endre beholdningen.`,
+                solution: `lager = {"epler": 50, "bananer": 20}\n\ndef kjop(vare, antall):\n    lager[vare] = lager.get(vare, 0) + antall\n    print(f"Kjøpte {antall} {vare}")\n\ndef selg(vare, antall):\n    if vare not in lager:\n        print("Vi har ikke den varen")\n        return\n    if lager[vare] < antall:\n        print("Ikke nok på lager")\n        return\n    lager[vare] -= antall\n    print(f"Solgte {antall} {vare}")\n\nkjop("pærer", 10)\nselg("epler", 100) # Feil\nselg("epler", 10)  # Ok\nprint(lager)`
+            },
+            {
+                id: 16,
+                title: "Telefonkatalog (Ordbok)",
+                topic: "Ordbøker",
+                difficulty: "Lett",
+                description: `En ordbok er perfekt for å slå opp informasjon.
+                <br>1. Opprett en ordbok <code>katalog</code>.
+                <br>2. Legg inn "Ola" med nummer 12345678 og "Kari" med nummer 87654321.
+                <br>3. Lag funksjonen <code>finn_nummer(navn)</code>.
+                <br>   - Den skal slå opp navnet i ordboken og returnere nummeret.
+                <br>   - Hvis navnet <strong>ikke</strong> finnes, skal den returnere teksten "Ukjent".`,
+                solution: `katalog = {}\nkatalog["Ola"] = 12345678\nkatalog["Kari"] = 87654321\n\ndef finn_nummer(navn):\n    return katalog.get(navn, "Ukjent")\n\nprint(finn_nummer("Ola"))\nprint(finn_nummer("Per"))`
+            },
+            {
+                id: 17,
+                title: "Temperatur-analyse (Lister)",
+                topic: "Lister",
+                difficulty: "Lett",
+                description: `Du har listen: <code>temp = [12.5, 14.0, 10.5, 15.2, 11.0]</code>.
+                <br>Bruk innebygde funksjoner i Python til å finne statistikk:
+                <br>1. <strong>Gjennomsnitt:</strong> Summen av alle tallene delt på antall tall (bruk <code>sum()</code> og <code>len()</code>).
+                <br>2. <strong>Maksimum:</strong> Den høyeste temperaturen (bruk <code>max()</code>).
+                <br>3. <strong>Minimum:</strong> Den laveste temperaturen (bruk <code>min()</code>).`,
+                solution: `temp = [12.5, 14.0, 10.5, 15.2, 11.0]\n\nsnitt = sum(temp) / len(temp)\nmaks = max(temp)\nminst = min(temp)\n\nprint(f"Snitt: {snitt:.1f}")\nprint(f"Maks: {maks}")\nprint(f"Min: {minst}")`
+            },
+            {
+                id: 18,
+                title: "Gjett tallet (Løkker)",
+                topic: "Løkker",
+                difficulty: "Medium",
+                description: `Lag et enkelt spill. Sett <code>fasit = 42</code>.
+                <br>Lag en løkke som går gjennom en liste med gjett (f.eks. <code>[10, 50, 42]</code>).
+                <br>For hvert tall:
+                <br>- Hvis tallet er mindre enn fasit: Print "For lavt".
+                <br>- Hvis tallet er større enn fasit: Print "For høyt".
+                <br>- Hvis tallet er likt: Print "Riktig!" og <strong>avslutt løkken</strong> (break).`,
+                solution: `fasit = 42\ngjett_liste = [10, 50, 40, 42] # Simulert input\n\nfor g in gjett_liste:\n    if g < fasit:\n        print(f"{g}: For lavt")\n    elif g > fasit:\n        print(f"{g}: For høyt")\n    else:\n        print(f"{g}: Riktig!")\n        break`
+            },
+            {
+                id: 19,
+                title: "Handleliste (Fil)",
+                topic: "Filbehandling",
+                difficulty: "Medium",
+                description: `Her skal du både skrive til og lese fra en fil.
+                <br>1. Lag listen <code>varer = ["Melk", "Brød", "Egg"]</code>.
+                <br>2. Åpne filen <code>handleliste.txt</code> i skrive-modus ("w"). Skriv hver vare til filen på en ny linje (husk <code>\\n</code>).
+                <br>3. Åpne filen igjen i lese-modus ("r"). Les linjene og print dem med et tall foran (1. Melk, 2. Brød...).`,
+                solution: `varer = ["Melk", "Brød", "Egg"]\n\nwith open("handleliste.txt", "w") as f:\n    for v in varer:\n        f.write(v + "\\n")\n\nwith open("handleliste.txt", "r") as f:\n    i = 1\n    for linje in f:\n        print(f"{i}. {linje.strip()}")\n        i += 1`
+            },
+            {
+                id: 20,
+                title: "Student-system (OOP)",
+                topic: "OOP",
+                difficulty: "Medium",
+                description: `Lag en klasse <code>Student</code> som holder styr på karakterer.
+                <br>1. Konstruktør: Tar inn <code>navn</code>. Oppretter en tom liste <code>self.karakterer</code>.
+                <br>2. <code>legg_til_karakter(k)</code>: Legger tallet k i listen.
+                <br>3. <code>snitt()</code>: Regner ut og returnerer gjennomsnittet av karakterene. (Husk å sjekke om listen er tom for å unngå dele-på-null feil).`,
+                solution: `class Student:\n    def __init__(self, navn):\n        self.navn = navn\n        self.karakterer = []\n\n    def legg_til_karakter(self, k):\n        self.karakterer.append(k)\n\n    def snitt(self):\n        if not self.karakterer:\n            return 0\n        return sum(self.karakterer) / len(self.karakterer)\n\ns = Student("Kari")\ns.legg_til_karakter(5)\ns.legg_til_karakter(4)\nprint(f"Snitt for {s.navn}: {s.snitt()}")`
+            },
+            {
+                id: 21,
+                title: "Primtall-sjekk (Algoritme)",
+                topic: "Algoritmer",
+                difficulty: "Medium",
+                description: `Et primtall er et tall som kun er delelig med 1 og seg selv.
+                <br>Lag funksjonen <code>er_primtall(n)</code>.
+                <br>- Hvis n < 2, returner False.
+                <br>- Bruk en løkke fra 2 opp til n. Hvis n er delelig med noen av tallene (bruk modulo <code>%</code>), returner False.
+                <br>- Hvis løkken er ferdig uten å finne noen delere, returner True.`,
+                solution: `def er_primtall(n):\n    if n < 2:\n        return False\n    for i in range(2, n):\n        if n % i == 0:\n            return False\n    return True\n\nprint(er_primtall(7))\nprint(er_primtall(10))`
+            },
+            {
+                id: 22,
+                title: "Fibonacci (Rekursjon)",
+                topic: "Algoritmer",
+                difficulty: "Hard",
+                description: `Fibonacci-rekken starter slik: 0, 1, 1, 2, 3, 5, 8...
+                <br>Hvert tall er summen av de to foregående.
+                <br>Skriv en <strong>rekursiv</strong> funksjon <code>fib(n)</code> som finner det n-te tallet.
+                <br><strong>Basis-tilfeller:</strong>
+                <br>- fib(0) = 0
+                <br>- fib(1) = 1
+                <br>Ellers: returner fib(n-1) + fib(n-2).`,
+                solution: `def fib(n):\n    if n <= 0: return 0\n    if n == 1: return 1\n    return fib(n-1) + fib(n-2)\n\nprint(fib(6))`
+            },
+            {
+                id: 23,
+                title: "Tre-på-rad Sjekk (Matrise)",
+                topic: "Nøstede Lister",
+                difficulty: "Hard",
+                description: `Du har et spillbrett representert som en liste av lister (3x3):
+                <br><code>brett = [['X','O','X'], ['O','X','O'], ['X',' ',' ']]</code>
+                <br>Din oppgave er å sjekke om 'X' har vunnet på <strong>diagonalen</strong> som går fra øverst til venstre (0,0) til nederst til høyre (2,2).
+                <br>Sjekk om posisjonene [0][0], [1][1] og [2][2] alle inneholder 'X'.`,
+                solution: `brett = [['X','O','X'], ['O','X','O'], ['X',' ',' ']]\n\nif brett[0][0] == 'X' and brett[1][1] == 'X' and brett[2][2] == 'X':\n    print("X vant!")\nelse:\n    print("Ingen vinner diagonalt")`
+            },
+            {
+                id: 24,
+                title: "Bokstav-telling (Fil)",
+                topic: "Filbehandling",
+                difficulty: "Hard",
+                description: `Analyser en tekststreng og tell forekomsten av hver bokstav.
+                <br>1. Lag en tom ordbok.
+                <br>2. Gå gjennom hver bokstav i teksten.
+                <br>3. Bruk <code>.lower()</code> for å telle 'A' og 'a' som samme bokstav.
+                <br>4. Bruk <code>.isalpha()</code> for å sjekke at det faktisk er en bokstav (ikke mellomrom eller punktum).
+                <br>5. Øk telleren i ordboken.`,
+                solution: `tekst = "Dette er en test tekst for å telle bokstaver"\ntelling = {}\n\nfor tegn in tekst.lower():\n    if tegn.isalpha():\n        telling[tegn] = telling.get(tegn, 0) + 1\n\n# Sortere (litt avansert)\nsortert = sorted(telling.items(), key=lambda x: x[1], reverse=True)\nprint(sortert[:3])`
+            },
+            {
+                id: 25,
+                title: "Bank med Feilhåndtering",
+                topic: "Exceptions",
+                difficulty: "Hard",
+                description: `I profesjonell kode bruker vi unntak (Exceptions) for å signalisere feil.
+                <br>1. Lag klassen <code>Konto</code> med saldo.
+                <br>2. I metoden <code>uttak(beløp)</code>: Hvis beløpet er større enn saldoen, bruk <code>raise ValueError("Ikke nok dekning")</code>.
+                <br>3. I hovedprogrammet: Prøv å ta ut for mye penger inni en <code>try/except</code>-blokk. Fang feilen og print den pent.`,
+                solution: `class Konto:\n    def __init__(self, saldo):\n        self.saldo = saldo\n    \n    def uttak(self, beløp):\n        if beløp > self.saldo:\n            raise ValueError("Ikke nok dekning")\n        self.saldo -= beløp\n\nk = Konto(100)\ntry:\n    k.uttak(200)\nexcept ValueError as e:\n    print(f"Feil: {e}")`
+            },
+            {
+                id: 26,
+                title: "Filtrere Personer (Lambda)",
+                topic: "Funksjoner",
+                difficulty: "Medium",
+                description: `Lambda-funksjoner er små, anonyme funksjoner.
+                <br>Du har listen: <code>folk = [{"navn": "Ola", "alder": 17}, {"navn": "Kari", "alder": 20}]</code>.
+                <br>Bruk funksjonen <code>filter(funksjon, liste)</code> for å plukke ut de som er 18 år eller eldre.
+                <br>Send inn en lambda-funksjon som sjekker om <code>p["alder"] >= 18</code>.`,
+                solution: `folk = [{"navn": "Ola", "alder": 17}, {"navn": "Kari", "alder": 20}]\nvoksne = list(filter(lambda p: p["alder"] >= 18, folk))\nprint(voksne)`
+            },
+            {
+                id: 27,
+                title: "Felles Hobbyer (Mengder)",
+                topic: "Mengder",
+                difficulty: "Lett",
+                description: `Mengder (sets) er geniale for å finne felles elementer.
+                <br>1. Opprett mengden <code>ola = {"Ski", "Gaming", "Mat"}</code>.
+                <br>2. Opprett mengden <code>kari = {"Mat", "Strikking", "Ski"}</code>.
+                <br>3. Bruk metoden <code>.intersection()</code> (snitt) for å finne hva begge liker.`,
+                solution: `ola = {"Ski", "Gaming", "Mat"}\nkari = {"Mat", "Strikking", "Ski"}\n\nfelles = ola.intersection(kari)\nprint(felles)`
+            },
+            {
+                id: 28,
+                title: "Dager til Jul (Dato)",
+                topic: "Bibliotek",
+                difficulty: "Medium",
+                description: `Python har en innebygd modul <code>datetime</code>.
+                <br>1. Importer <code>date</code> fra datetime.
+                <br>2. Lag et objekt for dagens dato: <code>date.today()</code>.
+                <br>3. Lag et objekt for julaften: <code>date(2025, 12, 24)</code> (bruk dagens årstall).
+                <br>4. Trekk dem fra hverandre for å få differansen, og print antall dager.`,
+                solution: `from datetime import date\ni_dag = date.today()\njul = date(i_dag.year, 12, 24)\n\nif i_dag > jul:\n    jul = date(i_dag.year + 1, 12, 24)\n\ndager = (jul - i_dag).days\nprint(f"{dager} dager til jul")`
+            },
+            {
+                id: 29,
+                title: "Highscore (JSON)",
+                topic: "Filbehandling",
+                difficulty: "Medium",
+                description: `JSON er standardformatet for å lagre data.
+                <br>1. Importer <code>json</code>.
+                <br>2. Lag en liste med ordbøker: <code>scores = [{"navn": "Ola", "poeng": 100}]</code>.
+                <br>3. Åpne filen <code>score.json</code> med "w" og bruk <code>json.dump(scores, f)</code> for å lagre.
+                <br>4. Les filen tilbake med <code>json.load(f)</code> og print innholdet.`,
+                solution: `import json\nscores = [{"navn": "Ola", "poeng": 100}, {"navn": "Per", "poeng": 150}]\n\nwith open("score.json", "w") as f:\n    json.dump(scores, f)\n\nwith open("score.json", "r") as f:\n    data = json.load(f)\n    leder = max(data, key=lambda x: x["poeng"])\n    print(f"Leder: {leder['navn']}")`
+            },
+            {
+                id: 30,
+                title: "Finne Lenker (Regex)",
+                topic: "Regex",
+                difficulty: "Hard",
+                description: `Regex (Regular Expressions) brukes for å finne mønstre i tekst.
+                <br>Du har teksten: <code>&lt;a href="google.com"&gt;</code>.
+                <br>Bruk <code>re.findall()</code> med mønsteret <code>href="([^"]+)"</code> for å hente ut URL-en (det som står mellom hermetegnene etter href=).`,
+                solution: `import re\nhtml = '<a href="google.com">Google</a> og <a href="uio.no">UiO</a>'\nurls = re.findall(r'href="([^"]+)"', html)\nprint(urls)`
+            },
+            {
+                id: 31,
+                title: "Geometriske Figurer (Arv)",
+                topic: "OOP",
+                difficulty: "Hard",
+                description: `Polymorfisme betyr at ulike klasser har samme metode-navn.
+                <br>1. Lag klassen <code>Sirkel</code> som tar inn radius.
+                <br>2. Lag klassen <code>Rektangel</code> som tar inn lengde og bredde.
+                <br>3. Begge skal ha metoden <code>areal()</code>. (Sirkel: pi * r^2, Rektangel: l * b).
+                <br>4. Legg objekter av begge typene i en liste, og bruk en løkke til å summere arealet av alle.`,
+                solution: `import math\n\nclass Figur:\n    def areal(self): pass\n\nclass Sirkel(Figur):\n    def __init__(self, r): self.r = r\n    def areal(self): return math.pi * self.r**2\n\nclass Rektangel(Figur):\n    def __init__(self, l, b): self.l = l; self.b = b\n    def areal(self): return self.l * self.b\n\nfigurer = [Sirkel(5), Rektangel(10, 20)]\ntotal = sum(f.areal() for f in figurer)\nprint(f"{total:.2f}")`
+            },
+            {
+                id: 32,
+                title: "Boblesortering (Algoritme)",
+                topic: "Algoritmer",
+                difficulty: "Hard",
+                description: `Bubble Sort er en klassisk sorteringsalgoritme.
+                <br>Konsept: Gå gjennom listen gjentatte ganger. Sammenlign to nabotall. Hvis det venstre er større enn det høyre, bytt plass på dem.
+                <br>Gjenta dette helt til listen er sortert.
+                <br>Prøv å implementere dette for listen <code>[5, 2, 9, 1]</code>.`,
+                solution: `tall = [5, 2, 9, 1, 5, 6]\nn = len(tall)\n\nfor i in range(n):\n    for j in range(0, n-i-1):\n        if tall[j] > tall[j+1]:\n            tall[j], tall[j+1] = tall[j+1], tall[j]\n\nprint(tall)`
+            },
+            {
+                id: 33,
+                title: "Stack (Datastruktur)",
+                topic: "Datastrukturer",
+                difficulty: "Medium",
+                description: `En <strong>Stack</strong> fungerer som en stabel med tallerkener (LIFO - Last In, First Out).
+                <br>Lag en klasse <code>Stack</code> med en liste.
+                <br>- <code>push(item)</code>: Legg til på toppen (append).
+                <br>- <code>pop()</code>: Ta av toppen (pop). Returner verdien.
+                <br>- <code>peek()</code>: Se på toppen uten å fjerne.
+                <br>Test at det siste du la til, er det første som kommer ut.`,
+                solution: `class Stack:\n    def __init__(self):\n        self.items = []\n    def push(self, item):\n        self.items.append(item)\n    def pop(self):\n        return self.items.pop() if self.items else None\n    def peek(self):\n        return self.items[-1] if self.items else None\n\ns = Stack()\ns.push(1)\ns.push(2)\nprint(s.pop()) # 2`
+            },
+            {
+                id: 34,
+                title: "Kø (Datastruktur)",
+                topic: "Datastrukturer",
+                difficulty: "Medium",
+                description: `En <strong>Queue</strong> fungerer som en kø i butikken (FIFO - First In, First Out).
+                <br>Lag en klasse <code>Queue</code> med en liste.
+                <br>- <code>enqueue(item)</code>: Still deg i køen (sett inn først i listen, eller legg til sist).
+                <br>- <code>dequeue()</code>: Ekspeder kunden (fjern fra motsatt ende av der du la til).
+                <br>Tips: <code>list.pop(0)</code> fjerner det første elementet.`,
+                solution: `class Queue:\n    def __init__(self):\n        self.items = []\n    def enqueue(self, item):\n        self.items.append(item)\n    def dequeue(self):\n        return self.items.pop(0) if self.items else None\n\nq = Queue()\nq.enqueue("Ola")\nq.enqueue("Kari")\nprint(q.dequeue()) # Ola`
+            },
+            {
+                id: 35,
+                title: "Bibliotek-system (Større System)",
+                topic: "OOP",
+                difficulty: "Hard",
+                description: `Dette er svenneprøven! Lag et system for et bibliotek.
+                <br><strong>Klasser:</strong>
+                <br>1. <code>Bok</code>: Tittel, og en boolsk verdi <code>utlånt</code> (False).
+                <br>2. <code>Medlem</code>: Navn, og en liste <code>lånte_bøker</code>.
+                <br>3. <code>Bibliotek</code>: Liste med bøker og liste med medlemmer.
+                <br><strong>Metoder i Bibliotek:</strong>
+                <br>- <code>registrer_bok(tittel)</code>: Opprett bok og legg i listen.
+                <br>- <code>lån_ut(tittel, medlem_navn)</code>: Finn boken og medlemmet. Hvis boken er ledig, sett den til utlånt og legg den i medlemmets liste.
+                <br>- <code>lever_inn(tittel, medlem_navn)</code>: Det motsatte.`,
+                solution: `class Bok:\n    def __init__(self, tittel):\n        self.tittel = tittel\n        self.utlånt = False\n\nclass Medlem:\n    def __init__(self, navn):\n        self.navn = navn\n        self.lånte = []\n\nclass Bibliotek:\n    def __init__(self):\n        self.bøker = []\n        self.medlemmer = []\n    \n    def lån_ut(self, tittel, navn):\n        # (Forenklet logikk for plasshensyn)\n        print(f"{navn} lånte {tittel}")\n\n# Dette er en skjelett-løsning. Prøv å fylle inn resten!`
+            }
+        ];
+
+        // --- RENDERING & LOGIC ---
+
+        function renderExercises() {
+            const container = document.getElementById('exercise-container');
+            container.innerHTML = '';
+
+            exercises.forEach(ex => {
+                // Determine colors based on difficulty
+                let diffColor = "bg-gray-100 text-gray-800";
+                if (ex.difficulty === "Lett") diffColor = "bg-green-100 text-green-800";
+                if (ex.difficulty === "Medium") diffColor = "bg-yellow-100 text-yellow-800";
+                if (ex.difficulty === "Hard") diffColor = "bg-red-100 text-red-800";
+
+                // Load saved code
+                const savedCode = localStorage.getItem('code_' + ex.id) || '';
+
+                const html = `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-xl font-bold text-gray-800">Oppgave ${ex.id}: ${ex.title}</h2>
+                                <span class="${diffColor} text-xs font-semibold px-2.5 py-0.5 rounded border border-opacity-20">${ex.difficulty}</span>
+                            </div>
+                            <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-0.5 rounded uppercase tracking-wide">${ex.topic}</span>
+                        </div>
+                        <div class="mb-4 text-gray-700" id="desc${ex.id}">
+                            ${ex.description}
+                        </div>
+                        <textarea id="input${ex.id}" class="code-input mb-4" placeholder="# Skriv din kode her..." oninput="saveCode(${ex.id}, this.value); autoResize(this)">${savedCode}</textarea>
+
+                        <div class="flex flex-wrap gap-2 justify-between">
+                            <div class="flex gap-2">
+                                <button onclick="checkCodeWithAI(${ex.id})"
+                                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                                    <i class="fas fa-magic mr-2"></i> ✨ Sjekk
+                                </button>
+                                <button onclick="toggleSolution('sol${ex.id}', this)"
+                                    class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                                    <i class="fas fa-eye mr-2"></i> Se fasit
+                                </button>
+                            </div>
+                            <button onclick="clearCode(${ex.id})" class="text-gray-400 hover:text-red-500 transition px-3" title="Slett kode">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- AI Feedback Area -->
+                        <div id="ai-feedback-${ex.id}" class="ai-feedback-box">
+                            <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
+                            <div id="ai-content-${ex.id}" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <div id="sol${ex.id}" class="solution-box p-6">
+                        <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
+                        <pre class="code-display mb-4">${ex.solution}</pre>
+                    </div>
+                </div>
+                `;
+                container.innerHTML += html;
+            });
+
+            // Resize all textareas after rendering to fit saved content
+            document.querySelectorAll('.code-input').forEach(autoResize);
+        }
+
+        function saveCode(id, code) {
+            localStorage.setItem('code_' + id, code);
+        }
+
+        function autoResize(textarea) {
+            textarea.style.height = 'auto'; // Reset height to calculate scrollHeight
+            textarea.style.height = textarea.scrollHeight + 'px';
+
+            // Re-enable scrollbar if max-height is reached
+            if (textarea.scrollHeight > 450) {
+                textarea.style.overflowY = "auto";
+            } else {
+                textarea.style.overflowY = "hidden";
+            }
+        }
+
+        function clearCode(id) {
+            if (confirm("Er du sikker på at du vil slette koden din for denne oppgaven?")) {
+                const textarea = document.getElementById('input' + id);
+                textarea.value = '';
+                localStorage.removeItem('code_' + id);
+                autoResize(textarea); // Reset size
+            }
+        }
+
+        // Enable Tab key and Smart Indent in all code textareas
+        document.addEventListener('DOMContentLoaded', function () {
+            renderExercises(); // RENDER EXERCISES ON LOAD
+
+            const handleKeyDown = function (e) {
+                if (!e.target.classList.contains('code-input')) return;
+
+                const textarea = e.target;
+
+                // TAB KEY
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    textarea.value = textarea.value.substring(0, start) + '\t' + textarea.value.substring(end);
+                    textarea.selectionStart = textarea.selectionEnd = start + 1;
+                }
+
+                // ENTER KEY (Smart Indent)
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const value = textarea.value;
+
+                    // Find start of current line
+                    const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+                    const currentLine = value.substring(lineStart, start);
+
+                    // Match indentation (spaces or tabs)
+                    const match = currentLine.match(/^\s*/);
+                    const indent = match ? match[0] : '';
+
+                    // Extra indent if line ends with colon (Python specific)
+                    const extraIndent = currentLine.trim().endsWith(':') ? '\t' : '';
+
+                    // Insert newline + indent
+                    const insertion = '\n' + indent + extraIndent;
+                    textarea.value = value.substring(0, start) + insertion + value.substring(end);
+                    textarea.selectionStart = textarea.selectionEnd = start + insertion.length;
+
+                    autoResize(textarea);
+                    // Scroll to cursor if needed
+                    textarea.blur();
+                    textarea.focus();
+                }
+            };
+
+            // Event delegation for dynamic elements
+            document.getElementById('exercise-container').addEventListener('keydown', handleKeyDown);
+
+            // Listener for static generator textarea
+            const generatorInput = document.getElementById('generated-input');
+            if (generatorInput) {
+                generatorInput.addEventListener('keydown', handleKeyDown);
+                generatorInput.addEventListener('input', function () { autoResize(this); });
+            }
+        });
+
 
 
         function toggleSolution(id, btn) {
@@ -387,6 +804,29 @@ except FileNotFoundError:
             } else {
                 sol.style.display = "block";
                 btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i> Skjul fasit';
+            }
+        }
+
+        function showSection(sectionId) {
+            const premadeSection = document.getElementById('premade-section');
+            const generatorSection = document.getElementById('generator-section');
+            const tabPremade = document.getElementById('tab-premade');
+            const tabGenerator = document.getElementById('tab-generator');
+
+            if (sectionId === 'premade') {
+                premadeSection.classList.remove('hidden');
+                generatorSection.classList.add('hidden');
+
+                // Update Tab Styles
+                tabPremade.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-indigo-600 text-white shadow-sm";
+                tabGenerator.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 text-gray-600 hover:bg-gray-100";
+            } else {
+                premadeSection.classList.add('hidden');
+                generatorSection.classList.remove('hidden');
+
+                // Update Tab Styles
+                tabPremade.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 text-gray-600 hover:bg-gray-100";
+                tabGenerator.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-indigo-600 text-white shadow-sm";
             }
         }
 
@@ -473,14 +913,17 @@ except FileNotFoundError:
             const textArea = document.getElementById('generated-text');
             const feedbackArea = document.getElementById('generated-feedback');
 
+            const difficulty = document.getElementById('difficulty').value;
+
             // Show loading in text area
             container.classList.remove('hidden');
-            textArea.innerHTML = '<div class="flex items-center text-indigo-300"><span class="loading-spinner"></span> Genererer en unik oppgave om ' + topic + '...</div>';
+            textArea.innerHTML = '<div class="flex items-center text-indigo-300"><span class="loading-spinner"></span> Genererer en ' + difficulty.toLowerCase() + ' oppgave om ' + topic + '...</div>';
             feedbackArea.classList.add('hidden');
             document.getElementById('generated-input').value = '';
 
             const prompt = `
-            Lag en kort, nybegynnervennlig Python-oppgave om temaet: "${topic}".
+            Lag en kort Python-oppgave om temaet: "${topic}".
+            Vanskelighetsgrad: ${difficulty}.
             Språk: Norsk.
             Ikke inkluder løsningen, kun oppgaveteksten.
             Oppgaveteksten skal være tydelig og konkret.
