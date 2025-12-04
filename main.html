@@ -678,6 +678,10 @@
                                     class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
                                     <i class="fas fa-magic mr-2"></i> ✨ Sjekk
                                 </button>
+                                <button onclick="explainTaskWithAI(${ex.id})"
+                                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                                    <i class="fas fa-question-circle mr-2"></i> 💡 Forklar
+                                </button>
                                 <button onclick="toggleSolution('sol${ex.id}', this)"
                                     class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
                                     <i class="fas fa-eye mr-2"></i> Se fasit
@@ -692,6 +696,16 @@
                         <div id="ai-feedback-${ex.id}" class="ai-feedback-box">
                             <h4 class="font-bold text-blue-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
                             <div id="ai-content-${ex.id}" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                        </div>
+
+                        <!-- AI Explanation Area -->
+                        <div id="ai-explanation-${ex.id}" class="ai-feedback-box relative" style="border-left-color: #9333ea; background-color: #f3e8ff;">
+                            <button onclick="document.getElementById('ai-explanation-${ex.id}').style.display='none'" 
+                                class="absolute top-2 right-2 text-purple-800 hover:text-purple-900 transition">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <h4 class="font-bold text-purple-800 mb-2"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
+                            <div id="ai-explanation-content-${ex.id}" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
                         </div>
                     </div>
 
@@ -730,6 +744,56 @@
                 textarea.value = '';
                 localStorage.removeItem('code_' + id);
                 autoResize(textarea); // Reset size
+            }
+        }
+
+        async function explainTaskWithAI(id) {
+            const exercise = exercises.find(e => e.id === id);
+            const explanationBox = document.getElementById(`ai-explanation-${id}`);
+            const contentBox = document.getElementById(`ai-explanation-content-${id}`);
+
+            // Show loading state
+            explanationBox.style.display = 'block';
+            contentBox.innerHTML = '<div class="loading-spinner border-purple-600 border-t-transparent"></div> Tenker...';
+
+            const prompt = `
+            Jeg er en nybegynner i Python og forstår ikke helt denne oppgaven. Kan du forklare den på en enklere måte?
+            Ikke gi meg løsningen, men forklar konseptene og hva jeg skal gjøre.
+            
+            Oppgavetittel: ${exercise.title}
+            Oppgavetekst: ${exercise.description.replace(/<[^>]*>?/gm, '')}
+            `;
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: prompt }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.candidates && data.candidates[0].content) {
+                    const aiText = data.candidates[0].content.parts[0].text;
+                    // Simple markdown parsing
+                    const formattedText = aiText
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/`([^`]+)`/g, '<code>$1</code>')
+                        .replace(/\n/g, '<br>');
+
+                    contentBox.innerHTML = formattedText;
+                } else {
+                    contentBox.innerHTML = 'Kunne ikke få forklaring akkurat nå. Prøv igjen senere.';
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                contentBox.innerHTML = 'Noe gikk galt med AI-tilkoblingen.';
             }
         }
 
