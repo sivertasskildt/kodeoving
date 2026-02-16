@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="no">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Treningsleir + AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .code-input {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            width: 100%;
+            min-height: 200px;
+            max-height: 500px;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            resize: none;
+            border: 1px solid #374151;
+            overflow-y: hidden;
+            line-height: 1.3;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3);
+        }
+
+        .solution-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            display: none;
+        }
+
+        .ai-feedback-box {
+            background-color: #fff7ed;
+            border-left: 4px solid #f97316;
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .code-display {
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Markdown-like styling for AI response */
+        .ai-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-content code {
+            background-color: #e5e7eb;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.2rem;
+            font-family: monospace;
+            color: #d63384;
+        }
+
+        .ai-content pre {
+            background-color: #1f2937;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.3rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+
+<body class="pb-20">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-orange-600 to-red-700 text-white p-6 shadow-md mb-8">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold"><i class="fa-brands fa-java mr-2"></i> Java Treningsleir <span
+                        class="text-yellow-300 text-xl">+ AI ✨</span></h1>
+                <p class="opacity-90 mt-1">Mestrer du OOP? Tren før eksamen! IN1010</p>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+                <a href="index.html"
+                    class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 flex items-center text-sm">
+                    <i class="fa-brands fa-python mr-2 text-lg"></i> Gå til Python
+                </a>
+                <div class="hidden md:block text-right text-xs opacity-80">
+                    Drevet av Gemini<br>Eksamensforberedelser
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 space-y-8">
+
+        <!-- Tab Navigation -->
+        <div class="flex flex-col md:flex-row justify-center items-center mb-8 gap-4">
+            <div class="bg-white rounded-lg shadow-md p-1 inline-flex">
+                <button onclick="showSection('premade')" id="tab-premade"
+                    class="px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-orange-600 text-white shadow-sm">
+                    <i class="fas fa-list-ol mr-2"></i> IN1010 Oppgaver
+                </button>
+                <button onclick="showSection('generator')" id="tab-generator"
+                    class="px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 text-gray-600 hover:bg-gray-100">
+                    <i class="fas fa-infinity mr-2"></i> Generator
+                </button>
+            </div>
+        </div>
+
+        <!-- Section: Premade Exercises -->
+        <div id="premade-section" class="space-y-8">
+            <div id="exercise-container" class="space-y-8"></div>
+        </div>
+
+        <!-- Section: Generator -->
+        <div id="generator-section" class="hidden space-y-8">
+            <div
+                class="bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-lg shadow-xl overflow-hidden border border-gray-700">
+                <div class="p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-orange-500 p-3 rounded-full mr-4">
+                            <i class="fas fa-infinity text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold">Uendelig Java-generator ✨</h2>
+                            <p class="text-gray-400">Trenger du flere nøtter? La AI lage en ny!</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-orange-300 text-sm font-bold mb-2" for="difficulty">
+                            Velg vanskelighetsgrad:
+                        </label>
+                        <select id="difficulty"
+                            class="block w-full bg-gray-700 border border-gray-600 text-white py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-gray-600 focus:border-orange-500">
+                            <option value="Lett">🟢 Lett (Grunnleggende)</option>
+                            <option value="Medium" selected>🟡 Medium (Oblig-nivå)</option>
+                            <option value="Vanskelig">🔴 Vanskelig (Eksamen)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <button onclick="generateExercise('Objektorientering')"
+                            class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-orange-400 group">
+                            <h3 class="font-bold group-hover:text-orange-400">📦 Klasser & Objekter</h3>
+                            <p class="text-xs text-gray-400 mt-1">Intro til OOP</p>
+                        </button>
+                        <button onclick="generateExercise('Arv og Polymorfisme')"
+                            class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-orange-400 group">
+                            <h3 class="font-bold group-hover:text-orange-400">🧬 Arv</h3>
+                            <p class="text-xs text-gray-400 mt-1">Subklasser og Interfaces</p>
+                        </button>
+                        <button onclick="generateExercise('Datastrukturer')"
+                            class="bg-gray-700 hover:bg-gray-600 p-4 rounded-lg text-left transition border border-gray-600 hover:border-orange-400 group">
+                            <h3 class="font-bold group-hover:text-orange-400">📊 Beholdere</h3>
+                            <p class="text-xs text-gray-400 mt-1">ArrayList, HashMap</p>
+                        </button>
+                    </div>
+
+                    <div id="generated-container" class="hidden bg-gray-800 rounded-lg p-6 border border-gray-700">
+                        <h3 class="text-orange-400 font-bold mb-2 uppercase text-sm tracking-wide">Din oppgave:</h3>
+                        <div id="generated-text" class="text-gray-200 mb-6 leading-relaxed"></div>
+
+                        <textarea id="generated-input" class="code-input mb-4"
+                            placeholder="// Skriv din Java-løsning her..."></textarea>
+
+                        <button onclick="checkGeneratedCode()"
+                            class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition duration-200 shadow-lg hover:shadow-orange-500/30">
+                            <i class="fas fa-check-circle mr-2"></i> Sjekk løsning
+                        </button>
+
+                        <div id="generated-feedback"
+                            class="mt-4 p-4 rounded bg-gray-900 border-l-4 border-orange-500 hidden">
+                            <h4 class="font-bold text-orange-400 mb-1">Tilbakemelding:</h4>
+                            <div id="generated-feedback-text" class="text-sm text-gray-300"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center text-gray-500 mt-12 mb-8">
+        <p>Lykke til med kodingen! ☕️</p>
+        <p>© 2025 Sivert Asskildt. Alle rettigheter reservert.</p>
+    </footer>
+
+    <script>
+        // --- JAVA EXERCISES (IN1010 STYLE) ---
+        const exercises = [
+            {
+                id: 1,
+                title: "Person Klasse (Intro)",
+                topic: "Klasser",
+                difficulty: "Lett",
+                description: `Lag en klasse <code>Person</code>.
+                <br>1. Den skal ha variablene <code>navn</code> (String) og <code>alder</code> (int).
+                <br>2. Lag en konstruktør som setter disse.
+                <br>3. Lag en metode <code>skrivUt()</code> som printer "Navn: [navn], Alder: [alder]".
+                <br>Skriv også en <code>main</code>-metode som tester klassen.`,
+                solution: `class Person {
+    String navn;
+    int alder;
+
+    public Person(String navn, int alder) {
+        this.navn = navn;
+        this.alder = alder;
+    }
+
+    public void skrivUt() {
+        System.out.println("Navn: " + navn + ", Alder: " + alder);
+    }
+
+    public static void main(String[] args) {
+        Person p = new Person("Ola", 20);
+        p.skrivUt();
+    }
+}`
+            },
+            {
+                id: 2,
+                title: "Sum av Liste (Løkker)",
+                topic: "ArrayList",
+                difficulty: "Lett",
+                description: `Lag en metode <code>summer(ArrayList&lt;Integer&gt; tall)</code>.
+                <br>Metoden skal returnere summen av alle tallene i listen.
+                <br>Bruk en for-løkke (gjerne for-each typen).`,
+                solution: `import java.util.ArrayList;
+
+class SumOppgave {
+    public static int summer(ArrayList<Integer> tall) {
+        int sum = 0;
+        for (Integer t : tall) {
+            sum += t;
+        }
+        return sum;
+    }
+
+    public static void main(String[] args) {
+        ArrayList<Integer> liste = new ArrayList<>();
+        liste.add(5);
+        liste.add(10);
+        System.out.println(summer(liste));
+    }
+}`
+            },
+            {
+                id: 3,
+                title: "Bussbillett (Arv)",
+                topic: "Arv",
+                difficulty: "Medium",
+                description: `Dette er en klassiker!
+                <br>1. Lag klassen <code>Billett</code> med en variabel <code>pris</code>.
+                <br>2. Lag subklassen <code>Barnebillett</code> som arver fra Billett.
+                <br>   - Barnebillett skal koste halvparten av vanlig pris.
+                <br>   - Overstyre en metode (f.eks. <code>hentPris</code>) eller sett prisen i konstruktøren.
+                <br>3. Test ved å opprette begge typer billetter.`,
+                solution: `class Billett {
+    double pris;
+
+    public Billett(double pris) {
+        this.pris = pris;
+    }
+
+    public double hentPris() {
+        return pris;
+    }
+}
+
+class Barnebillett extends Billett {
+    public Barnebillett(double pris) {
+        super(pris);
+    }
+
+    @Override
+    public double hentPris() {
+        return super.hentPris() * 0.5;
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Billett b = new Billett(100);
+        Barnebillett barn = new Barnebillett(100);
+        System.out.println("Vanlig: " + b.hentPris());
+        System.out.println("Barn: " + barn.hentPris());
+    }
+}`
+            },
+            {
+                id: 4,
+                title: "Figur Interface (Polymorfisme)",
+                topic: "Interface",
+                difficulty: "Medium",
+                description: `Lag et interface <code>Figur</code> som har metoden <code>double areal()</code>.
+                <br>1. Lag klassen <code>Sirkel</code> som implementerer Figur. (Areal: Math.PI * r * r)
+                <br>2. Lag klassen <code>Rektangel</code> som implementerer Figur. (Areal: l * b)
+                <br>3. Lag en <code>main</code>-metode som legger ulike figurer i en tabell/liste og summerer arealet av alle.`,
+                solution: `interface Figur {
+    double areal();
+}
+
+class Sirkel implements Figur {
+    double radius;
+    public Sirkel(double r) { radius = r; }
+    public double areal() { return Math.PI * radius * radius; }
+}
+
+class Rektangel implements Figur {
+    double l, b;
+    public Rektangel(double l, double b) { this.l = l; this.b = b; }
+    public double areal() { return l * b; }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Figur[] figurer = { new Sirkel(5), new Rektangel(2, 4) };
+        double total = 0;
+        for (Figur f : figurer) total += f.areal();
+        System.out.println("Total: " + total);
+    }
+}`
+            },
+            {
+                id: 5,
+                title: "Generisk Beholder (Generics)",
+                topic: "Generics",
+                difficulty: "Hard",
+                description: `Lag en generisk klasse <code>Boks&lt;T&gt;</code>.
+                <br>1. Den skal kunne holde på ett objekt av typen T.
+                <br>2. Metoder: <code>putt(T ting)</code> og <code>T hent()</code>.
+                <br>3. Hvis boksen allerede er full når du kaller putt, returner false (eller kast exception).
+                <br>4. Test med en Boks for String og en for Integer.`,
+                solution: `class Boks<T> {
+    private T innhold;
+
+    public void putt(T ting) {
+        if (innhold == null) {
+            innhold = ting;
+        } else {
+            System.out.println("Boksen er full!");
+        }
+    }
+
+    public T hent() {
+        T temp = innhold;
+        innhold = null;
+        return temp;
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Boks<String> ordboks = new Boks<>();
+        ordboks.putt("Hei");
+        System.out.println(ordboks.hent());
+    }
+}`
+            },
+            {
+                id: 6,
+                title: "Bilregister (HashMap)",
+                topic: "HashMap",
+                difficulty: "Hard",
+                description: `Lag et system for å slå opp eiere av biler.
+                <br>1. Bruk en <code>HashMap&lt;String, String&gt;</code> der nøkkel er regnr og verdi er eier.
+                <br>2. Lag metoden <code>registrer(regnr, eier)</code>.
+                <br>3. Lag metoden <code>finnEier(regnr)</code> som returnerer eieren, eller "Ukjent" hvis den ikke finnes.
+                <br>Tips: <code>map.getOrDefault(key, default)</code>.`,
+                solution: `import java.util.HashMap;
+
+class BilRegister {
+    HashMap<String, String> register = new HashMap<>();
+
+    public void registrer(String regnr, String eier) {
+        register.put(regnr, eier);
+    }
+
+    public String finnEier(String regnr) {
+        return register.getOrDefault(regnr, "Ukjent");
+    }
+
+    public static void main(String[] args) {
+        BilRegister br = new BilRegister();
+        br.registrer("AB12345", "Kongen");
+        System.out.println(br.finnEier("AB12345"));
+        System.out.println(br.finnEier("ZZ99999"));
+    }
+}`
+            },
+            {
+                id: 7,
+                title: "Jernbane (Eksamen 2023)",
+                topic: "Arv & Abstrakt",
+                difficulty: "Medium",
+                description: `Basert på Eksamen 2023:
+                <br>1. Lag en abstrakt klasse <code>Skinnegående</code> med variablene <code>id</code> (String) og <code>sporvidde</code> (int).
+                <br>2. Lag en abstrakt subklasse <code>Vogn</code> som legger til <code>lengde</code>.
+                <br>3. Lag subklassen <code>Passasjervogn</code> som arver fra Vogn (har i tillegg antall seter).
+                <br>4. Lag test-program som oppretter en Passasjervogn.`,
+                solution: `abstract class Skinnegående {
+    String id;
+    int sporvidde;
+    public Skinnegående(String id, int sporvidde) {
+        this.id = id; this.sporvidde = sporvidde;
+    }
+}
+
+abstract class Vogn extends Skinnegående {
+    double lengde;
+    public Vogn(String id, int sporvidde, double lengde) {
+        super(id, sporvidde);
+        this.lengde = lengde;
+    }
+}
+
+class Passasjervogn extends Vogn {
+    int seter;
+    public Passasjervogn(String id, int spor, double len, int seter) {
+        super(id, spor, len);
+        this.seter = seter;
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Passasjervogn p = new Passasjervogn("V1", 1435, 20.5, 50);
+        System.out.println("Vogn ID: " + p.id);
+    }
+}`
+            },
+            {
+                id: 8,
+                title: "Tog-Validere (Eksamen 2023)",
+                topic: "Lenkelister & Rekursjon",
+                difficulty: "Ekstra Vanskelig",
+                description: `Basert på Eksamen 2023 (Oppgave 3/4):
+                <br>Du har en lenkeliste av vogner (se forrige oppgave).
+                <br>Lag metoden <code>validerSporvidde(Vogn v, int forventet)</code>.
+                <br>Metoden skal være <strong>rekursiv</strong>. Den skal sjekke om vognen <code>v</code> og alle vognene etter den har riktig sporvidde.
+                <br>Hvis en vogn har feil sporvidde, kast unntaket <code>IllegalArgumentException("Feil sporvidde!")</code>.
+                <br>Tips: Tenk at hver vogn har en peker <code>neste</code>.`,
+                solution: `class Vogn {
+    int sporvidde;
+    Vogn neste;
+    public Vogn(int s) { sporvidde = s; }
+}
+
+class Tog {
+    public void validerSporvidde(Vogn v, int forventet) {
+        if (v == null) return; // Basis: slutten av toget
+        
+        if (v.sporvidde != forventet) {
+            throw new IllegalArgumentException("Feil sporvidde!");
+        }
+        
+        // Rekursivt kall på neste vogn
+        validerSporvidde(v.neste, forventet);
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Vogn v1 = new Vogn(1435);
+        Vogn v2 = new Vogn(1435);
+        v1.neste = v2;
+        
+        try {
+            new Tog().validerSporvidde(v1, 1435);
+            System.out.println("Toget er OK!");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}`
+            },
+            {
+                id: 9,
+                title: "Iterator (TallListe)",
+                topic: "Iterator & Iterable",
+                difficulty: "Medium",
+                description: `Lag en klasse <code>TallListe</code> som lagrer heltall i en array/liste.
+                <br>1. Klassen skal implementere <code>Iterable&lt;Integer&gt;</code>.
+                <br>2. Du må da lage en indre klasse (f.eks. <code>TallIterator</code>) som implementerer <code>Iterator&lt;Integer&gt;</code>.
+                <br>3. Gjør det mulig å bruke for-each løkke: <code>for (int x : tallListe)</code>.`,
+                solution: `import java.util.Iterator;
+import java.util.ArrayList;
+
+class TallListe implements Iterable<Integer> {
+    private ArrayList<Integer> liste = new ArrayList<>();
+
+    public void leggTil(int x) {
+        liste.add(x);
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return new TallIterator();
+    }
+
+    // Indre klasse
+    class TallIterator implements Iterator<Integer> {
+        private int indeks = 0;
+
+        @Override
+        public boolean hasNext() {
+            return indeks < liste.size();
+        }
+
+        @Override
+        public Integer next() {
+            return liste.get(indeks++);
+        }
+    }
+    
+    public static void main(String[] args) {
+        TallListe tl = new TallListe();
+        tl.leggTil(10); tl.leggTil(20);
+        for (int x : tl) System.out.println(x);
+    }
+}`
+            },
+            {
+                id: 10,
+                title: "Monitor (Tråder)",
+                topic: "Tråder (Concurrency)",
+                difficulty: "Hard",
+                description: `Lag en tråsikker beholder <code>Monitor</code>.
+                <br>1. Det skal være en variabel <code>tall</code> som starter på 0.
+                <br>2. Metoden <code>opp()</code> skal øke tallet.
+                <br>3. Metoden <code>ned()</code> skal minke tallet, men HVIS tallet er 0 skal den vente (<code>wait()</code>) til det blir større enn 0.
+                <br>4. Husk <code>synchronized</code> og <code>notifyAll()</code>.`,
+                solution: `class Monitor {
+    private int tall = 0;
+
+    public synchronized void opp() {
+        tall++;
+        notifyAll(); // Vekk de som venter
+    }
+
+    public synchronized void ned() {
+        while (tall == 0) {
+            try {
+                wait();
+            } catch (InterruptedException e) {}
+        }
+        tall--;
+    }
+}
+
+class Arbeider implements Runnable {
+    Monitor m;
+    public Arbeider(Monitor m) { this.m = m; }
+    public void run() {
+        m.opp();
+        System.out.println("Økte tallet!");
+    }
+}
+
+class Main {
+    public static void main(String[] args) {
+        Monitor m = new Monitor();
+        new Thread(new Arbeider(m)).start();
+    }
+}`
+            },
+            {
+                id: 11,
+                title: "Game of Life (Celle)",
+                topic: "Logikk & Objekter",
+                difficulty: "Medium",
+                description: `En klassiker fra IN1010! Lag klassen <code>Celle</code>.
+                <br>1. En celle kan være levende (booleans).
+                <br>2. Den har en metode <code>tellNaboer()</code> (simulert her med array input).
+                <br>3. Lag metoden <code>oppdaterStatus()</code>:
+                <br>   - Hvis levende og < 2 eller > 3 naboer -> Dø.
+                <br>   - Hvis død og nøyaktig 3 naboer -> Lev opp.
+                <br>   - Ellers behold status.`,
+                solution: `class Celle {
+    boolean levende = false;
+    int antallNaboer = 0;
+
+    public void settLevende() { levende = true; }
+    public void settDød() { levende = false; }
+
+    public void oppdaterStatus() {
+        if (levende) {
+            if (antallNaboer < 2 || antallNaboer > 3) {
+                levende = false;
+            }
+        } else {
+            if (antallNaboer == 3) {
+                levende = true;
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        Celle c = new Celle();
+        c.settLevende();
+        c.antallNaboer = 4;
+        c.oppdaterStatus();
+        System.out.println("Er levende: " + c.levende);
+    }
+}`
+            }
+        ];
+
+        // --- COMMON LOGIC (Similar to main.html) ---
+
+        function renderExercises() {
+            const container = document.getElementById('exercise-container');
+            container.innerHTML = '';
+
+            exercises.forEach(ex => {
+                let diffColor = "bg-gray-100 text-gray-800";
+                if (ex.difficulty === "Lett") diffColor = "bg-green-100 text-green-800";
+                if (ex.difficulty === "Medium") diffColor = "bg-yellow-100 text-yellow-800";
+                if (ex.difficulty === "Hard") diffColor = "bg-red-100 text-red-800";
+
+                const savedCode = localStorage.getItem('java_code_' + ex.id) || '';
+
+                const html = `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center gap-3">
+                                <h2 class="text-xl font-bold text-gray-800">Oppgave ${ex.id}: ${ex.title}</h2>
+                                <span class="${diffColor} text-xs font-semibold px-2.5 py-0.5 rounded border border-opacity-20">${ex.difficulty}</span>
+                            </div>
+                            <span class="bg-orange-50 text-orange-600 text-xs font-semibold px-2.5 py-0.5 rounded uppercase tracking-wide">${ex.topic}</span>
+                        </div>
+                        <div class="mb-4 text-gray-700" id="desc${ex.id}">${ex.description}</div>
+                        <textarea id="input${ex.id}" class="code-input mb-4" placeholder="// Skriv din Java-kode her..." oninput="saveCode(${ex.id}, this.value); autoResize(this)">${savedCode}</textarea>
+
+                        <div class="flex flex-wrap gap-2 justify-between">
+                            <div class="flex gap-2">
+                                <button onclick="checkCodeWithAI(${ex.id})" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                                    <i class="fas fa-magic mr-2"></i> ✨ Sjekk
+                                </button>
+                                <button onclick="explainTaskWithAI(${ex.id})" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                                    <i class="fas fa-question-circle mr-2"></i> 💡 Forklar
+                                </button>
+                                <button onclick="toggleSolution('sol${ex.id}', this)" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded transition duration-200">
+                                    <i class="fas fa-eye mr-2"></i> Se fasit
+                                </button>
+                            </div>
+                            <button onclick="clearCode(${ex.id})" class="text-gray-400 hover:text-red-500 transition px-3" title="Slett kode">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+
+                        <div id="ai-feedback-${ex.id}" class="ai-feedback-box">
+                            <h4 class="font-bold text-orange-800 mb-2"><i class="fas fa-robot mr-2"></i>AI-Læreren sier:</h4>
+                            <div id="ai-content-${ex.id}" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                        </div>
+
+                         <div id="ai-explanation-${ex.id}" class="ai-feedback-box relative" style="border-left-color: #9333ea; background-color: #f3e8ff; display:none;">
+                            <button onclick="document.getElementById('ai-explanation-${ex.id}').style.display='none'" 
+                                class="absolute top-2 right-2 text-purple-800 hover:text-purple-900 transition">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            <h4 class="font-bold text-purple-800 mb-2"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
+                            <div id="ai-explanation-content-${ex.id}" class="ai-content text-gray-800 text-sm leading-relaxed"></div>
+                        </div>
+                    </div>
+
+                    <div id="sol${ex.id}" class="solution-box p-6">
+                        <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
+                        <pre class="code-display mb-4">${ex.solution}</pre>
+                    </div>
+                </div>`;
+                container.innerHTML += html;
+            });
+            document.querySelectorAll('.code-input').forEach(autoResize);
+        }
+
+        function saveCode(id, code) { localStorage.setItem('java_code_' + id, code); }
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = textarea.scrollHeight + 'px';
+        }
+        function clearCode(id) {
+            if (confirm("Slett koden?")) {
+                const el = document.getElementById('input' + id);
+                el.value = '';
+                localStorage.removeItem('java_code_' + id);
+                autoResize(el);
+            }
+        }
+        function toggleSolution(id, btn) {
+            const sol = document.getElementById(id);
+            if (sol.style.display === "block") {
+                sol.style.display = "none";
+                btn.innerHTML = '<i class="fas fa-eye mr-2"></i> Se fasit';
+            } else {
+                sol.style.display = "block";
+                btn.innerHTML = '<i class="fas fa-eye-slash mr-2"></i> Skjul fasit';
+            }
+        }
+        function showSection(sectionId) {
+            document.getElementById('premade-section').classList.toggle('hidden', sectionId !== 'premade');
+            document.getElementById('generator-section').classList.toggle('hidden', sectionId !== 'generator');
+
+            const btnPremade = document.getElementById('tab-premade');
+            const btnGen = document.getElementById('tab-generator');
+
+            if (sectionId === 'premade') {
+                btnPremade.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-orange-600 text-white shadow-sm";
+                btnGen.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 text-gray-600 hover:bg-gray-100";
+            } else {
+                btnPremade.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 text-gray-600 hover:bg-gray-100";
+                btnGen.className = "px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-orange-600 text-white shadow-sm";
+            }
+        }
+
+        // --- AI API ---
+        async function callGemini(promptText) {
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+                });
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (e) {
+                console.error(e);
+                return "Feil med AI-tjenesten.";
+            }
+        }
+
+        function formatAIResponse(text) {
+            let formatted = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-800 p-2 rounded text-gray-200 text-xs my-2 overflow-x-auto">$1</pre>');
+            formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-gray-200 text-pink-600 px-1 rounded font-mono text-sm">$1</code>');
+            return formatted.replace(/\n/g, '<br>');
+        }
+
+        async function checkCodeWithAI(id) {
+            const code = document.getElementById(`input${id}`).value;
+            const desc = document.getElementById(`desc${id}`).innerText;
+            const btn = event.target;
+            const contentBox = document.getElementById(`ai-content-${id}`);
+            const feedbackBox = document.getElementById(`ai-feedback-${id}`);
+
+            if (!code.trim()) { alert("Skriv kode først!"); return; }
+
+            const oldText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading-spinner"></span> Tenker...';
+            btn.disabled = true;
+
+            const prompt = `Du er en pedagogisk Java-lærer for studenter i IN1010. 
+            Oppgave: "${desc}". 
+            Studentens Java-kode: """${code}""". 
+            Gi kort og konstruktiv tilbakemelding på norsk. Er det compile errors? Logiske feil? Ros hvis riktig.`;
+
+            const reply = await callGemini(prompt);
+            contentBox.innerHTML = formatAIResponse(reply);
+            feedbackBox.style.display = 'block';
+            btn.innerHTML = oldText;
+            btn.disabled = false;
+        }
+
+        async function explainTaskWithAI(id) {
+            const exercise = exercises.find(e => e.id === id);
+            const box = document.getElementById(`ai-explanation-${id}`);
+            const content = document.getElementById(`ai-explanation-content-${id}`);
+
+            box.style.display = 'block';
+            content.innerHTML = '<span class="loading-spinner"></span> Analyserer oppgaven...';
+
+            const prompt = `Forklar denne Java-oppgaven enkelt for en nybegynner, uten å gi koden: "${exercise.description.replace(/<[^>]*>?/gm, '')}"`;
+            const reply = await callGemini(prompt);
+            content.innerHTML = formatAIResponse(reply);
+        }
+
+        async function generateExercise(topic) {
+            const diff = document.getElementById('difficulty').value;
+            const textArea = document.getElementById('generated-text');
+            const container = document.getElementById('generated-container');
+
+            container.classList.remove('hidden');
+            textArea.innerHTML = '<span class="loading-spinner"></span> Genererer Java-oppgave...';
+
+            const prompt = `Lag en kort Java-oppgave om "${topic}". 
+            Nivå: ${diff}. 
+            Fokus: Objektorientering (IN1010). 
+            Kun oppgavetekst.`;
+
+            const text = await callGemini(prompt);
+            container.dataset.currentTask = text;
+            textArea.innerHTML = formatAIResponse(text);
+        }
+
+        async function checkGeneratedCode() {
+            const code = document.getElementById('generated-input').value;
+            const task = document.getElementById('generated-container').dataset.currentTask;
+            const feedback = document.getElementById('generated-feedback-text');
+            const area = document.getElementById('generated-feedback');
+
+            if (!code.trim()) return;
+
+            area.classList.remove('hidden');
+            feedback.innerHTML = '<span class="loading-spinner"></span> Sjekker Java-koden...';
+
+            const prompt = `Du er Java-lærer. Oppgave: "${task}". Svar: """${code}""". Gi tilbakemelding.`;
+            const reply = await callGemini(prompt);
+            feedback.innerHTML = formatAIResponse(reply);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderExercises);
+    </script>
+</body>
+
+</html>

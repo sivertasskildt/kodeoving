@@ -114,10 +114,16 @@
             <div>
                 <h1 class="text-3xl font-bold"><i class="fa-brands fa-python mr-2"></i> Python Treningsleir <span
                         class="text-yellow-300 text-xl">+ AI ✨</span></h1>
-                <p class="opacity-90 mt-1">Løs oppgaven, få AI-hjelp, og bli en mester.</p>
+                <p class="opacity-90 mt-1">Løs oppgaven, få AI-hjelp, og bli en mester. IN1000</p>
             </div>
-            <div class="hidden md:block text-right text-sm opacity-80">
-                Drevet av Gemini<br>Eksamensforberedelser
+            <div class="flex flex-col items-end gap-2">
+                <a href="java.html"
+                    class="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-bold shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 flex items-center text-sm">
+                    <i class="fa-brands fa-java mr-2 text-lg"></i> Gå til Java
+                </a>
+                <div class="hidden md:block text-right text-xs opacity-80">
+                    Drevet av Gemini<br>Eksamensforberedelser
+                </div>
             </div>
         </div>
     </header>
@@ -126,7 +132,8 @@
     <main class="max-w-4xl mx-auto px-4 space-y-8">
 
         <!-- Tab Navigation -->
-        <div class="flex justify-center mb-8">
+        <div class="flex flex-col md:flex-row justify-center items-center mb-8 gap-4">
+
             <div class="bg-white rounded-lg shadow-md p-1 inline-flex">
                 <button onclick="showSection('premade')" id="tab-premade"
                     class="px-6 py-2 rounded-md font-bold text-sm transition-colors duration-200 bg-indigo-600 text-white shadow-sm">
@@ -229,7 +236,7 @@
             {
                 id: 1,
                 title: "Dyrejakt (Logikk)",
-                topic: "Eksamen 2024",
+                topic: "Lister & Logikk",
                 difficulty: "Lett",
                 description: `Lag en funksjon <code>jages(dyreliste)</code> som returnerer <code>True</code> hvis listen inneholder både "katt" og "hund", ELLER både "mus" og "katt". Ellers returner <code>False</code>.
                 <br>Eksempel: <code>['mus', 'katt']</code> -> True. <code>['mus', 'hund']</code> -> False.`,
@@ -238,7 +245,7 @@
             {
                 id: 2,
                 title: "Flertall (Ordbok)",
-                topic: "Eksamen 2024",
+                topic: "Ordbøker",
                 difficulty: "Medium",
                 description: `Lag en funksjon <code>flertall(dyreliste)</code> som finner hvilket dyr det er flest av.
                 <br>Returner navnet på dyret. Hvis det er uavgjort mellom to eller flere, returner "uavgjort".
@@ -248,7 +255,7 @@
             {
                 id: 3,
                 title: "Felles Tall (Nøstede Lister)",
-                topic: "Eksamen 2024",
+                topic: "Nøstede Lister",
                 difficulty: "Medium",
                 description: `Lag en funksjon <code>felles(tall_lister)</code> som tar inn en liste av lister med tall.
                 <br>Funksjonen skal returnere en liste med de tallene som finnes i MER enn én av underlistene.
@@ -258,7 +265,7 @@
             {
                 id: 4,
                 title: "Barnehage (Klasser)",
-                topic: "Eksamen 2022",
+                topic: "Klasser & Objekter",
                 difficulty: "Medium",
                 description: `1. Lag klassen <code>Person</code> med <code>alder</code>. Metode <code>bursdag()</code> øker alder med 1.
                 <br>2. Lag klassen <code>Barnehage</code> som tar inn et <code>Person</code>-objekt (et barn) i konstruktøren.
@@ -269,7 +276,7 @@
             {
                 id: 5,
                 title: "Adskilte Lister",
-                topic: "Eksamen 2024",
+                topic: "Nøstede Lister",
                 difficulty: "Hard",
                 description: `Lag en funksjon <code>adskilt(tall_lister)</code>. Den skal returnere <code>True</code> hvis det finnes to lister A og B i inputen slik at ALLE tall i A er større enn ALLE tall i B.
                 <br>Ellers returner <code>False</code>.
@@ -279,7 +286,7 @@
             {
                 id: 6,
                 title: "Utvidet Jakt (Ordbok)",
-                topic: "Eksamen 2024",
+                topic: "Ordbøker & Lister",
                 difficulty: "Hard",
                 description: `Lag funksjonen <code>utvidet_jages(dyreliste, jaging)</code>.
                 <br><code>jaging</code> er en ordbok der nøkkel jager verdi (f.eks. {'ulv': 'sau'}).
@@ -289,7 +296,7 @@
             {
                 id: 7,
                 title: "Bussbillett (Klasser)",
-                topic: "Eksamen Sim",
+                topic: "Arv & Polymorfi",
                 difficulty: "Medium",
                 description: `Lag en klasse <code>Billett</code> med pris.
                 <br>Lag subklasser <code>Barnebillett</code> (halv pris) og <code>Honnør</code> (70% rabatt).
@@ -318,7 +325,7 @@
             {
                 id: 10,
                 title: "Unike Ord i Fil",
-                topic: "Fil + Mengder",
+                topic: "Mengder & Fil",
                 difficulty: "Hard",
                 description: `Lag et program som leser en tekstfil, splitter den opp i ord, og printer antall <strong>unike</strong> ord (bruk set).
                 <br>Ignorer store/små bokstaver.`,
@@ -327,7 +334,7 @@
             {
                 id: 11,
                 title: "Hybelhus (Større System)",
-                topic: "OOP",
+                topic: "Større OOP-System",
                 difficulty: "Hard",
                 description: `Dette er en større oppgave hvor du skal modellere utleie av hybler.
                 <br><strong>1. Klassen Hybel:</strong>
@@ -343,7 +350,7 @@
             {
                 id: 12,
                 title: "Spilleliste (OOP + Lister)",
-                topic: "OOP",
+                topic: "Klasser & Lister",
                 difficulty: "Medium",
                 description: `Lag et system for å håndtere musikk.
                 <br><strong>1. Klassen Sang:</strong>
@@ -358,7 +365,7 @@
             {
                 id: 13,
                 title: "Bokhandel (Filbehandling + OOP)",
-                topic: "Filbehandling",
+                topic: "Fil & Objekter",
                 difficulty: "Hard",
                 description: `Du skal lese inn bøker fra en fil og analysere dem.
                 <br>Filformatet i <code>boker.txt</code> er: <em>Tittel;Forfatter;Pris</em> (semikolon-separert).
@@ -374,7 +381,7 @@
             {
                 id: 14,
                 title: "Sudoku-sjekk (Nøstede Lister)",
-                topic: "Algoritmer",
+                topic: "Mengder & Logikk",
                 difficulty: "Hard",
                 description: `I Sudoku må hver rekke inneholde tallene 1-9 nøyaktig én gang.
                 <br>Lag funksjonen <code>sjekk_rekke(rekke)</code> som tar inn en liste med 9 tall.

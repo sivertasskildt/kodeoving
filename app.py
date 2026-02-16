@@ -13,7 +13,7 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5
 
 @app.route('/')
 def index():
-    return send_from_directory('.', 'main.html')
+    return send_from_directory('.', 'index.html')
 
 @app.route('/api/generate', methods=['POST'])
 def generate():
