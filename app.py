@@ -15,6 +15,10 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5
 def index():
     return send_from_directory('.', 'index.html')
 
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('.', path)
+
 @app.route('/api/generate', methods=['POST'])
 def generate():
     if not API_KEY:
