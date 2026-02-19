@@ -1,5 +1,5 @@
 import os
-import requests
+from google import genai
 from flask import Flask, request, jsonify, send_from_directory
 from dotenv import load_dotenv
 
@@ -9,7 +9,6 @@ load_dotenv()
 app = Flask(__name__, static_folder='.')
 
 API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent"
 
 @app.route('/')
 def index():
@@ -30,22 +29,20 @@ def generate():
     if not prompt_text:
         return jsonify({"error": "No prompt provided"}), 400
 
-    # Construct payload for Gemini
-    payload = {
-        "contents": [{
-            "parts": [{"text": prompt_text}]
-        }]
-    }
-
     try:
-        response = requests.post(
-            f"{GEMINI_URL}?key={API_KEY}",
-            json=payload,
-            headers={'Content-Type': 'application/json'}
+        client = genai.Client()
+        response = client.models.generate_content(
+            model="gemini-3-flash-preview", 
+            contents=prompt_text
         )
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.exceptions.RequestException as e:
+        return jsonify({
+            "candidates": [{
+                "content": {
+                    "parts": [{"text": response.text}]
+                }
+            }]
+        })
+    except Exception as e:
         print(f"Error calling Gemini API: {e}")
         return jsonify({"error": "Failed to communicate with AI service"}), 502
 
