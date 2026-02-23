@@ -103,6 +103,60 @@
             overflow-x: auto;
             margin: 0.5rem 0;
         }
+
+        /* === Progress Dashboard === */
+        #progress-dashboard {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .progress-bar-bg {
+            height: 0.75rem;
+            background: #f3f4f6;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .exercise-dots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .exercise-dot {
+            width: 1.75rem;
+            height: 1.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            background: #f9fafb;
+            color: #9ca3af;
+            border: 1px solid #e1e7ef;
+            transition: all 0.2s;
+        }
+
+        .exercise-dot.completed {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #86efac;
+            box-shadow: 0 2px 4px rgba(34, 197, 94, 0.1);
+        }
     </style>
 </head>
 
@@ -130,6 +184,27 @@
 
     <!-- Main Content -->
     <main class="max-w-4xl mx-auto px-4 space-y-8">
+
+        <!-- Progress Dashboard -->
+        <div id="progress-dashboard">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-chart-line text-blue-500"></i>
+                    <span class="font-bold text-gray-800 text-sm">Din fremgang (Python)</span>
+                    <span id="progress-label" class="text-xs text-gray-500 font-medium">0 / 35 godkjent</span>
+                </div>
+                <button onclick="resetProgress()" class="text-xs text-gray-400 hover:text-red-400 transition"
+                    title="Nullstill fremgang">
+                    <i class="fas fa-undo mr-1"></i>Nullstill
+                </button>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-bar-fill" style="width:0%"></div>
+            </div>
+            <div class="exercise-dots" id="exercise-dots">
+                <!-- Dots injected by JS -->
+            </div>
+        </div>
 
         <!-- Tab Navigation -->
         <div class="flex flex-col md:flex-row justify-center items-center mb-8 gap-4">
@@ -227,7 +302,7 @@
 
     <footer class="text-center text-gray-500 mt-12 mb-8">
         <p>Lykke til med øvingen! 🚀</p>
-        <p>© 2025 Sivert Asskildt. Alle rettigheter reservert.</p>
+        <p>© 2026 Sivert Asskildt.</p>
     </footer>
 
     <script>
@@ -662,15 +737,21 @@
                 if (ex.difficulty === "Hard") diffColor = "bg-red-100 text-red-800";
 
                 // Load saved code
-                const savedCode = localStorage.getItem('code_' + ex.id) || '';
+                const savedCode = localStorage.getItem('python_code_' + ex.id) || '';
+                const isCompleted = localStorage.getItem('python_done_' + ex.id) === '1';
+
+                const completedBadge = isCompleted
+                    ? `<span id="completedBadge${ex.id}" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full border border-green-300 flex items-center gap-1"><i class="fas fa-check"></i> Godkjent</span>`
+                    : `<span id="completedBadge${ex.id}" class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full border border-green-300 flex items-center gap-1 hidden"><i class="fas fa-check"></i> Godkjent</span>`;
 
                 const html = `
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transition hover:shadow-xl ${isCompleted ? 'ring-2 ring-green-300' : ''}" id="card${ex.id}">
                     <div class="p-6 border-b border-gray-200">
                         <div class="flex justify-between items-start mb-4">
-                            <div class="flex items-center gap-3">
+                            <div class="flex items-center gap-3 flex-wrap">
                                 <h2 class="text-xl font-bold text-gray-800">Oppgave ${ex.id}: ${ex.title}</h2>
                                 <span class="${diffColor} text-xs font-semibold px-2.5 py-0.5 rounded border border-opacity-20">${ex.difficulty}</span>
+                                ${completedBadge}
                             </div>
                             <span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2.5 py-0.5 rounded uppercase tracking-wide">${ex.topic}</span>
                         </div>
@@ -679,11 +760,14 @@
                         </div>
                         <textarea id="input${ex.id}" class="code-input mb-4" placeholder="# Skriv din kode her..." oninput="saveCode(${ex.id}, this.value); autoResize(this)">${savedCode}</textarea>
 
-                        <div class="flex flex-wrap gap-2 justify-between">
-                            <div class="flex gap-2">
+                         <div class="flex flex-wrap gap-2 justify-between">
+                            <div class="flex gap-2 flex-wrap">
                                 <button onclick="checkCodeWithAI(${ex.id})"
                                     class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
                                     <i class="fas fa-magic mr-2"></i> ✨ Sjekk
+                                </button>
+                                <button onclick="simulateOutput(${ex.id})" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
+                                    <i class="fas fa-terminal mr-2"></i> ▶ Kjør
                                 </button>
                                 <button onclick="explainTaskWithAI(${ex.id})"
                                     class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-200 flex items-center">
@@ -694,9 +778,24 @@
                                     <i class="fas fa-eye mr-2"></i> Se fasit
                                 </button>
                             </div>
-                            <button onclick="clearCode(${ex.id})" class="text-gray-400 hover:text-red-500 transition px-3" title="Slett kode">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
+                            <div class="flex gap-2 items-center">
+                                <button onclick="copyCode(${ex.id})" class="text-gray-400 hover:text-blue-500 transition px-3" title="Kopier kode">
+                                    <i class="fas fa-copy text-lg"></i>
+                                </button>
+                                <button onclick="clearCode(${ex.id})" class="text-gray-400 hover:text-red-500 transition px-3" title="Slett kode">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Output Simulator Box -->
+                        <div class="output-simulator-box" id="outputBox${ex.id}" style="display:none; background:#1e293b; border-radius:0.5rem; margin-top:1rem; border:1px solid #334155; overflow:hidden;">
+                            <div style="background:#334155; padding:0.5rem 1rem; color:#94a3b8; font-size:0.7rem; display:flex; gap:0.5rem; align-items:center; font-family:monospace;">
+                                <i class="fas fa-terminal"></i>
+                                <span>Simulert output (AI)</span>
+                                <button onclick="document.getElementById('outputBox${ex.id}').style.display='none'" style="margin-left:auto; color:#64748b; background:none; border:none; cursor:pointer;"><i class="fas fa-times"></i></button>
+                            </div>
+                            <div id="outputText${ex.id}" style="padding:1rem; color:#e2e8f0; font-family:ui-monospace, monospace; font-size:0.8rem; white-space:pre-wrap;">...</div>
                         </div>
 
                         <!-- AI Feedback Area -->
@@ -717,8 +816,11 @@
                     </div>
 
                     <div id="sol${ex.id}" class="solution-box p-6">
-                        <h3 class="font-bold text-green-800 mb-2">Løsning:</h3>
-                        <pre class="code-display mb-4">${ex.solution}</pre>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-green-800">Løsning:</h3>
+                            <button onclick="copySolution(${ex.id})" class="text-xs text-gray-500 hover:text-green-700 transition"><i class="fas fa-copy mr-1"></i>Kopier fasit</button>
+                        </div>
+                        <pre class="code-display mb-4" id="solPre${ex.id}">${ex.solution}</pre>
                     </div>
                 </div>
                 `;
@@ -727,10 +829,11 @@
 
             // Resize all textareas after rendering to fit saved content
             document.querySelectorAll('.code-input').forEach(autoResize);
+            updateProgress();
         }
 
         function saveCode(id, code) {
-            localStorage.setItem('code_' + id, code);
+            localStorage.setItem('python_code_' + id, code);
         }
 
         function autoResize(textarea) {
@@ -749,9 +852,33 @@
             if (confirm("Er du sikker på at du vil slette koden din for denne oppgaven?")) {
                 const textarea = document.getElementById('input' + id);
                 textarea.value = '';
-                localStorage.removeItem('code_' + id);
+                localStorage.removeItem('python_code_' + id);
                 autoResize(textarea); // Reset size
             }
+        }
+
+        // === Progress Dashboard Logic ===
+        function updateProgress() {
+            const total = exercises.length;
+            const done = exercises.filter(ex => localStorage.getItem('python_done_' + ex.id) === '1').length;
+
+            document.getElementById('progress-label').textContent = `${done} / ${total} godkjent`;
+            document.getElementById('progress-bar-fill').style.width = `${Math.round(done / total * 100)}%`;
+
+            const dotsEl = document.getElementById('exercise-dots');
+            dotsEl.innerHTML = exercises.map(ex => {
+                const isDone = localStorage.getItem('python_done_' + ex.id) === '1';
+                return `<div class="exercise-dot ${isDone ? 'completed' : ''}" title="Oppgave ${ex.id}: ${ex.title}">${ex.id}</div>`;
+            }).join('');
+        }
+
+        function resetProgress() {
+            if (!confirm('Nullstill all fremgang og slett all lagret kode?')) return;
+            exercises.forEach(ex => {
+                localStorage.removeItem('python_done_' + ex.id);
+                localStorage.removeItem('python_code_' + ex.id);
+            });
+            renderExercises();
         }
 
         async function explainTaskWithAI(id) {
@@ -969,14 +1096,25 @@
             `;
 
             const reply = await callGemini(prompt);
-
-            // Render output
             contentBox.innerHTML = formatAIResponse(reply);
             feedbackBox.style.display = 'block';
-
-            // Reset UI
             btn.innerHTML = originalBtnText;
             btn.disabled = false;
+
+            // Auto-mark as completed if AI gives positive feedback
+            const lower = reply.toLowerCase();
+            const isPositive = (lower.includes('riktig') || lower.includes('bra') || lower.includes('korrekt') || lower.includes('flott') || lower.includes('bra gjort') || lower.includes('godkjent') || lower.includes('fungerer') || lower.includes('ser bra ut'))
+                && !lower.includes('feil') && !lower.includes('error') && !lower.includes('mangler') && !lower.includes('problem');
+
+            if (isPositive && localStorage.getItem('python_done_' + id) !== '1') {
+                localStorage.setItem('python_done_' + id, '1');
+                updateProgress();
+                // Show green badge without full re-render
+                const badge = document.getElementById('completedBadge' + id);
+                if (badge) badge.classList.remove('hidden');
+                const card = document.getElementById('card' + id);
+                if (card) card.classList.add('ring-2', 'ring-green-300');
+            }
         }
 
         async function generateExercise(topic) {
@@ -1042,6 +1180,47 @@
 
             btn.innerHTML = originalBtnText;
             btn.disabled = false;
+        }
+
+        // === Feature Helpers ===
+        async function simulateOutput(id) {
+            const code = document.getElementById(`input${id}`).value;
+            const box = document.getElementById(`outputBox${id}`);
+            const out = document.getElementById(`outputText${id}`);
+            if (!code.trim()) { alert('Skriv koden din først!'); return; }
+
+            box.style.display = 'block';
+            out.innerHTML = '<span style="color:#64748b">⏳ Simulerer kjøring...</span>';
+
+            const prompt = `Du er en Python-tolk. Gitt denne koden, vis BARE hva terminalen ville ha skrevet ut (print() osv.). Ikke forklar, ikke vis koden selv. Vis kun den rå output-teksten nøyaktig som terminalen ville vist den. Hvis koden har feil, skriv "IndentationError:", "SyntaxError:" osv. etterfulgt av en kort forklaring. Kode:\n\`\`\`python\n${code}\n\`\`\``;
+
+            const reply = await callGemini(prompt);
+            const escaped = reply.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            out.innerHTML = escaped;
+        }
+
+        function copyCode(id) {
+            const code = document.getElementById('input' + id).value;
+            if (!code.trim()) { alert('Ingen kode å kopiere!'); return; }
+            navigator.clipboard.writeText(code).then(() => {
+                showCopyFeedback();
+            });
+        }
+
+        function copySolution(id) {
+            const code = document.getElementById('solPre' + id)?.innerText || '';
+            if (!code.trim()) return;
+            navigator.clipboard.writeText(code).then(() => {
+                showCopyFeedback();
+            });
+        }
+
+        function showCopyFeedback() {
+            const tmp = document.createElement('div');
+            tmp.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;background:#1e293b;color:#4ade80;padding:0.6rem 1.2rem;border-radius:0.5rem;font-size:0.85rem;box-shadow:0 4px 14px rgba(0,0,0,0.3);z-index:9999;opacity:1;transition:opacity 0.4s';
+            tmp.innerHTML = '<i class="fas fa-check mr-2"></i> Kopiert!';
+            document.body.appendChild(tmp);
+            setTimeout(() => { tmp.style.opacity = '0'; setTimeout(() => tmp.remove(), 400); }, 1400);
         }
 
         function formatAIResponse(text) {
