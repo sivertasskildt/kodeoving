@@ -36,7 +36,18 @@
             --input-bg: #1e1e1e;
             --input-text: #d4d4d4;
             --solution-bg: #111111;
+            --solution-heading: #4ade80;
             --feedback-bg: #111111;
+            --feedback-border: #f97316;
+            --feedback-heading: #fdba74;
+            --explanation-bg: #1e152a;
+            --explanation-border: #9333ea;
+            --explanation-heading: #c084fc;
+            --explanation-close: #c084fc;
+            --explanation-close-hover: #e9d5ff;
+            --generator-feedback-bg: #18181b;
+            --code-inline-bg: #2d3748;
+            --code-inline-text: #f472b6;
             --hover-border: #555555;
             --primary-color: #f97316;
             --terminal-bg: #1e293b;
@@ -54,7 +65,18 @@
             --input-bg: #ffffff;
             --input-text: #111111;
             --solution-bg: #f9fafb;
-            --feedback-bg: #f9fafb;
+            --solution-heading: #15803d;
+            --feedback-bg: #fff7ed;
+            --feedback-border: #f97316;
+            --feedback-heading: #c2410c;
+            --explanation-bg: #f9f5ff;
+            --explanation-border: #9333ea;
+            --explanation-heading: #6b21a8;
+            --explanation-close: #7e22ce;
+            --explanation-close-hover: #581c87;
+            --generator-feedback-bg: #f8fafc;
+            --code-inline-bg: #e2e8f0;
+            --code-inline-text: #db2777;
             --hover-border: #999999;
             --terminal-bg: #f1f5f9;
             --terminal-header: #cbd5e1;
@@ -90,18 +112,60 @@
     }
 
     .solution-box {
-      background-color: #111; border: 1px solid var(--border-color);
+      background-color: var(--solution-bg);
+      border: 1px solid var(--border-color);
       border-left: 4px solid #22c55e;
       display: none;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .solution-heading {
+      color: var(--solution-heading);
     }
 
     .ai-feedback-box {
-      background-color: #111; border: 1px solid var(--border-color);
-      border-left: 4px solid #f97316;
+      background-color: var(--feedback-bg);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--feedback-border);
       display: none;
       margin-top: 1rem;
       padding: 1rem;
       border-radius: 0.25rem;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .ai-explanation-box {
+      background-color: var(--explanation-bg) !important;
+      border-left-color: var(--explanation-border) !important;
+    }
+
+    .feedback-heading {
+      color: var(--feedback-heading);
+    }
+
+    .explanation-heading {
+      color: var(--explanation-heading);
+    }
+
+    .explanation-close-btn {
+      color: var(--explanation-close);
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    .explanation-close-btn:hover {
+      color: var(--explanation-close-hover);
+    }
+
+    .generator-feedback-box {
+      background-color: var(--generator-feedback-bg);
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary-color);
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      transition: background-color 0.2s, border-color 0.2s;
     }
 
     .code-display {
@@ -136,11 +200,12 @@
     }
 
     .ai-content code {
-      background-color: #e5e7eb;
+      background-color: var(--code-inline-bg);
       padding: 0.1rem 0.3rem;
       border-radius: 0.2rem;
       font-family: monospace;
-      color: #d63384;
+      color: var(--code-inline-text);
+      transition: background-color 0.2s, color 0.2s;
     }
 
     .ai-content pre {
@@ -378,7 +443,7 @@
 
           <div id="generated-container" class="hidden bg-[var(--card-bg)] border border-[var(--border-color)] p-6">
             <h3 class="text-[var(--primary-color)] font-bold mb-2 uppercase text-sm tracking-wide">Din oppgave:</h3>
-            <div id="generated-text" class="text-[var(--text-color)] mb-6 leading-relaxed"></div>
+            <div id="generated-text" class="ai-content text-[var(--text-color)] mb-6 leading-relaxed"></div>
 
             <textarea id="generated-input" class="code-input mb-4"
               placeholder="// Skriv din Java-løsning her..."></textarea>
@@ -389,9 +454,9 @@
             </button>
 
             <div id="generated-feedback"
-              class="mt-4 p-4 rounded bg-gray-900 border-l-4 border-[var(--primary-color)] hidden">
+              class="generator-feedback-box hidden">
               <h4 class="font-bold text-[var(--primary-color)] mb-1">Tilbakemelding:</h4>
-              <div id="generated-feedback-text" class="text-sm text-[var(--text-color)]"></div>
+              <div id="generated-feedback-text" class="ai-content text-sm text-[var(--text-color)]"></div>
             </div>
           </div>
         </div>
@@ -893,23 +958,23 @@ class Main {
             </div>
 
             <div id="ai-feedback-${ex.id}" class="ai-feedback-box">
-              <h4 class="font-bold text-orange-800 mb-2"><i class="fas fa-robot mr-2"></i>Tilbakemelding:</h4>
+              <h4 class="font-bold feedback-heading mb-2"><i class="fas fa-robot mr-2"></i>Tilbakemelding:</h4>
               <div id="ai-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
             </div>
 
-             <div id="ai-explanation-${ex.id}" class="ai-feedback-box relative" style="border-left-color: #9333ea; background-color: #f3e8ff; display:none;">
+             <div id="ai-explanation-${ex.id}" class="ai-feedback-box ai-explanation-box relative" style="display:none;">
               <button onclick="document.getElementById('ai-explanation-${ex.id}').style.display='none'" 
-                class="absolute top-2 right-2 text-purple-800 hover:text-purple-900 transition">
+                class="absolute top-2 right-2 explanation-close-btn transition">
                 <i class="fas fa-times"></i>
               </button>
-              <h4 class="font-bold text-purple-800 mb-2"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
+              <h4 class="font-bold explanation-heading mb-2"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
               <div id="ai-explanation-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
             </div>
           </div>
 
           <div id="sol${ex.id}" class="solution-box p-6">
             <div class="flex justify-between items-center mb-2">
-              <h3 class="font-bold text-green-800">Løsning:</h3>
+              <h3 class="font-bold solution-heading">Løsning:</h3>
               <button onclick="copySolution(${ex.id})" class="text-xs text-[var(--text-muted)] hover:text-green-700 transition"><i class="fas fa-copy mr-1"></i>Kopier fasit</button>
             </div>
             <pre class="code-display mb-4" id="solPre${ex.id}">${ex.solution}</pre>
@@ -1061,7 +1126,7 @@ class Main {
       let formatted = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
       formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-800 p-2 rounded text-[var(--text-color)] text-xs my-2 overflow-x-auto">$1</pre>');
-      formatted = formatted.replace(/`([^`]+)`/g, '<code class="bg-gray-200 text-pink-600 px-1 rounded font-mono text-sm">$1</code>');
+      formatted = formatted.replace(/`([^`]+)`/g, '<code class="font-mono text-sm">$1</code>');
       return formatted.replace(/\n/g, '<br>');
     }
 
