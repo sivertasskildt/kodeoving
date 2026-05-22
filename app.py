@@ -24,16 +24,16 @@ def generate():
         return jsonify({"error": "Server configuration error: API Key missing"}), 500
 
     data = request.json
-    prompt_text = data.get('contents', [{}])[0].get('parts', [{}])[0].get('text', '')
+    contents = data.get('contents')
 
-    if not prompt_text:
-        return jsonify({"error": "No prompt provided"}), 400
+    if not contents:
+        return jsonify({"error": "No contents provided"}), 400
 
     try:
         client = genai.Client()
         response = client.models.generate_content(
             model="gemini-3-flash-preview", 
-            contents=prompt_text
+            contents=contents
         )
         return jsonify({
             "candidates": [{

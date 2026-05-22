@@ -217,6 +217,123 @@
       margin: 0.5rem 0;
     }
 
+    /* === AI Chat Styles === */
+    .ai-chat-box {
+      border: 1px solid var(--border-color);
+      margin-top: 1rem;
+      border-radius: 0.25rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--card-bg);
+      transition: all 0.2s ease;
+    }
+    
+    .ai-chat-header {
+      background-color: var(--border-color);
+      color: var(--text-color);
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .ai-chat-messages {
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background-color: rgba(0, 0, 0, 0.15);
+    }
+    
+    body.light .ai-chat-messages {
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    .chat-bubble {
+      max-width: 85%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      position: relative;
+      animation: bubbleFadeIn 0.25s ease-out;
+    }
+    
+    @keyframes bubbleFadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .chat-bubble-user {
+      align-self: flex-end;
+      background-color: var(--primary-color);
+      color: #000000;
+      border-bottom-right-radius: 0.1rem;
+      font-weight: 500;
+    }
+    
+    body.light .chat-bubble-user {
+      background-color: var(--primary-color);
+      color: #000000;
+    }
+    
+    .chat-bubble-model {
+      align-self: flex-start;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+      border-bottom-left-radius: 0.1rem;
+    }
+    
+    .ai-chat-input-area {
+      display: flex;
+      border-top: 1px solid var(--border-color);
+      background-color: var(--input-bg);
+    }
+    
+    .ai-chat-input {
+      flex: 1;
+      background-color: transparent;
+      color: var(--input-text);
+      padding: 0.75rem 1rem;
+      border: none;
+      font-size: 0.85rem;
+      resize: none;
+      height: 42px;
+      line-height: 1.4;
+    }
+    
+    .ai-chat-input:focus {
+      outline: none;
+    }
+    
+    .ai-chat-send-btn {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      padding: 0 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s;
+    }
+    
+    .ai-chat-send-btn:hover {
+      opacity: 0.8;
+    }
+    
+    .ai-chat-send-btn:disabled {
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
     /* === Progress Dashboard === */
     #progress-dashboard {
       background: var(--card-bg);
@@ -936,6 +1053,9 @@ class Main {
                 <button onclick="explainTaskWithAI(${ex.id})" class="border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
                   <i class="fa-regular fa-lightbulb mr-2"></i> Forklar
                 </button>
+                <button onclick="toggleChat(${ex.id})" class="border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
+                  <i class="fa-regular fa-comments mr-2"></i> Spør AI
+                </button>
                 <button onclick="toggleSolution('sol${ex.id}', this)" class="border border-gray-500 text-[var(--text-muted)] hover:bg-gray-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200">
                   <i class="fas fa-eye mr-2"></i> Se fasit
                 </button>
@@ -969,6 +1089,30 @@ class Main {
               </button>
               <h4 class="font-bold explanation-heading mb-2"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
               <div id="ai-explanation-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
+            </div>
+
+            <!-- AI Chat Area -->
+            <div id="ai-chat-${ex.id}" class="ai-chat-box" style="display: none;">
+              <div class="ai-chat-header">
+                <span><i class="fa-regular fa-comments mr-2"></i>AI-veileder Chat</span>
+                <div class="flex gap-2">
+                  <button onclick="clearChat(${ex.id})" class="text-[var(--text-muted)] hover:text-red-500 transition text-xs font-mono" title="Tøm samtalehistorikk">
+                    <i class="fas fa-trash-alt mr-1"></i> Tøm chat
+                  </button>
+                  <button onclick="toggleChat(${ex.id})" class="text-[var(--text-muted)] hover:text-white transition text-xs" title="Lukk chat">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div id="ai-chat-messages-${ex.id}" class="ai-chat-messages">
+                <!-- Messages populated dynamically -->
+              </div>
+              <div class="ai-chat-input-area">
+                <textarea id="ai-chat-input-${ex.id}" class="ai-chat-input" placeholder="Still et spørsmål til oppgaven eller tilbakemeldingen..." onkeydown="handleChatKeyDown(${ex.id}, event)"></textarea>
+                <button id="ai-chat-send-${ex.id}" onclick="sendChatMessage(${ex.id})" class="ai-chat-send-btn" title="Send spørsmål">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1154,6 +1298,26 @@ class Main {
       btn.innerHTML = oldText;
       btn.disabled = false;
 
+      // Add to chat history
+      const exercise = exercises.find(e => e.id === id);
+      const descriptionText = exercise.description.replace(/<[^>]*>?/gm, '');
+      const history = getChatHistory(id);
+      history.push({
+        role: 'user',
+        parts: [{ text: `Vennligst sjekk koden min for oppgaven "${exercise.title}". Oppgavebeskrivelse: "${descriptionText}".\nMin kode:\n\`\`\`java\n${code}\n\`\`\`` }]
+      });
+      history.push({
+        role: 'model',
+        parts: [{ text: reply }]
+      });
+      saveChatHistory(id, history);
+
+      // If the chat box is open, re-render it
+      const chatBox = document.getElementById('ai-chat-' + id);
+      if (chatBox && chatBox.style.display !== 'none') {
+        renderChat(id);
+      }
+
       // Auto-mark as completed if AI gives positive feedback
       const lower = reply.toLowerCase();
       const isPositive = (lower.includes('riktig') || lower.includes('bra') || lower.includes('korrekt') || lower.includes('flott') || lower.includes('bra gjort') || lower.includes('godkjent') || lower.includes('fungerer') || lower.includes('ser bra ut'))
@@ -1180,6 +1344,185 @@ class Main {
       const prompt = `Forklar denne Java-oppgaven enkelt for en nybegynner, uten å gi koden: "${exercise.description.replace(/<[^>]*>?/gm, '')}"`;
       const reply = await callGemini(prompt);
       content.innerHTML = formatAIResponse(reply);
+
+      // Add to chat history
+      const descriptionText = exercise.description.replace(/<[^>]*>?/gm, '');
+      const history = getChatHistory(id);
+      history.push({
+        role: 'user',
+        parts: [{ text: `Kan du forklare oppgaven "${exercise.title}" for meg? Oppgavebeskrivelse: "${descriptionText}".` }]
+      });
+      history.push({
+        role: 'model',
+        parts: [{ text: reply }]
+      });
+      saveChatHistory(id, history);
+
+      // If the chat box is open, re-render it
+      const chatBox = document.getElementById('ai-chat-' + id);
+      if (chatBox && chatBox.style.display !== 'none') {
+        renderChat(id);
+      }
+    }
+
+    // --- AI CHAT LOGIC ---
+    function getChatHistory(id) {
+      const history = localStorage.getItem('java_chat_' + id);
+      return history ? JSON.parse(history) : [];
+    }
+
+    function saveChatHistory(id, history) {
+      localStorage.setItem('java_chat_' + id, JSON.stringify(history));
+    }
+
+    function toggleChat(id) {
+      const chatBox = document.getElementById('ai-chat-' + id);
+      const isHidden = chatBox.style.display === 'none';
+      chatBox.style.display = isHidden ? 'flex' : 'none';
+
+      if (isHidden) {
+        renderChat(id);
+        const inputField = document.getElementById('ai-chat-input-' + id);
+        if (inputField) {
+          inputField.focus();
+        }
+      }
+    }
+
+    function cleanUserMessageForDisplay(text) {
+      const idx = text.indexOf(']\n\n');
+      if (idx !== -1) {
+        return text.substring(idx + 3);
+      }
+      return text;
+    }
+
+    function renderChat(id) {
+      const messagesDiv = document.getElementById(`ai-chat-messages-${id}`);
+      if (!messagesDiv) return;
+
+      messagesDiv.innerHTML = '';
+      const history = getChatHistory(id);
+
+      if (history.length === 0) {
+        // Welcome message
+        messagesDiv.innerHTML = `
+          <div class="chat-bubble chat-bubble-model font-sans">
+            Hei! Jeg er din AI-veileder. Har du spørsmål til oppgaven, koden din, eller tilbakemeldingen? Spør i vei! 😊
+          </div>
+        `;
+      } else {
+        history.forEach(msg => {
+          const bubble = document.createElement('div');
+          if (msg.role === 'user') {
+            bubble.className = 'chat-bubble chat-bubble-user font-sans';
+            bubble.textContent = cleanUserMessageForDisplay(msg.parts[0].text);
+          } else {
+            bubble.className = 'chat-bubble chat-bubble-model font-sans';
+            bubble.innerHTML = formatAIResponse(msg.parts[0].text);
+          }
+          messagesDiv.appendChild(bubble);
+        });
+      }
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    async function sendChatMessage(id) {
+      const inputField = document.getElementById(`ai-chat-input-${id}`);
+      const sendBtn = document.getElementById(`ai-chat-send-${id}`);
+      if (!inputField || !sendBtn) return;
+
+      const userText = inputField.value.trim();
+      if (!userText) return;
+
+      // Clear input & disable UI
+      inputField.value = '';
+      inputField.disabled = true;
+      sendBtn.disabled = true;
+
+      const userCode = document.getElementById(`input${id}`).value.trim();
+      const exercise = exercises.find(e => e.id === id);
+      const descriptionText = exercise.description.replace(/<[^>]*>?/gm, '');
+
+      const history = getChatHistory(id);
+
+      // Construct system/context prompt
+      let textToSend = "";
+      // If no messages or first user turn, prep task description
+      if (history.length === 0) {
+        textToSend += `Jeg jobber med oppgaven "${exercise.title}".\nOppgavebeskrivelse: "${descriptionText}".\n`;
+      }
+      if (userCode) {
+        textToSend += `[Min nåværende kode:\n\`\`\`java\n${userCode}\n\`\`\`]\n\n`;
+      }
+      textToSend += userText;
+
+      history.push({
+        role: 'user',
+        parts: [{ text: textToSend }]
+      });
+
+      saveChatHistory(id, history);
+      renderChat(id);
+
+      // Show temporary loading state inside bubble
+      const messagesDiv = document.getElementById(`ai-chat-messages-${id}`);
+      const loadingBubble = document.createElement('div');
+      loadingBubble.className = 'chat-bubble chat-bubble-model font-sans opacity-70';
+      loadingBubble.innerHTML = '<span class="loading-spinner border-orange-500"></span> Tenker...';
+      messagesDiv.appendChild(loadingBubble);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+      try {
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: history })
+        });
+
+        if (loadingBubble.parentNode) {
+          loadingBubble.remove();
+        }
+
+        if (!response.ok) throw new Error('API returnerte feil');
+
+        const data = await response.json();
+        if (data.candidates && data.candidates[0].content) {
+          const aiText = data.candidates[0].content.parts[0].text;
+          history.push({
+            role: 'model',
+            parts: [{ text: aiText }]
+          });
+          saveChatHistory(id, history);
+          renderChat(id);
+        } else {
+          alert('Kunne ikke hente svar fra AI-en.');
+        }
+      } catch (error) {
+        console.error("Chat error:", error);
+        if (loadingBubble.parentNode) {
+          loadingBubble.remove();
+        }
+        alert('Tilkoblingsfeil. Kunne ikke kontakte AI-veilederen.');
+      } finally {
+        inputField.disabled = false;
+        sendBtn.disabled = false;
+        inputField.focus();
+      }
+    }
+
+    function handleChatKeyDown(id, event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendChatMessage(id);
+      }
+    }
+
+    function clearChat(id) {
+      if (confirm("Er du sikker på at du vil slette hele samtalehistorikken for denne oppgaven?")) {
+        localStorage.removeItem('java_chat_' + id);
+        renderChat(id);
+      }
     }
 
     async function generateExercise(topic) {
