@@ -377,9 +377,15 @@
       background: var(--bg-color);
       color: #6b7280;
       border: 1px solid var(--border-color);
-      cursor: default;
+      cursor: pointer;
       transition: all 0.2s;
       font-family: 'Space Mono', monospace;
+    }
+
+    .exercise-dot:hover {
+      border-color: #6366f1;
+      color: #6366f1;
+      transform: scale(1.1);
     }
 
     .exercise-dot.completed {
@@ -974,9 +980,16 @@
         const savedCode = localStorage.getItem('python_code_' + ex.id) || '';
         const isCompleted = localStorage.getItem('python_done_' + ex.id) === '1';
 
-        const completedBadge = isCompleted
-          ? `<span id="completedBadge${ex.id}" class="bg-indigo-500 text-black text-xs font-mono font-bold px-2 py-0.5 border border-[var(--primary-color)] flex items-center gap-1"><i class="fas fa-check"></i> Godkjent</span>`
-          : `<span id="completedBadge${ex.id}" class="bg-indigo-500 text-black text-xs font-mono font-bold px-2 py-0.5 border border-[var(--primary-color)] flex items-center gap-1 hidden"><i class="fas fa-check"></i> Godkjent</span>`;
+        const completedBadge = `<span id="completedBadge${ex.id}" 
+          class="cursor-pointer text-xs font-mono px-2 py-0.5 border transition duration-200 flex items-center gap-1 rounded-sm
+          ${isCompleted 
+            ? 'bg-indigo-500 text-black border-[var(--primary-color)] font-bold' 
+            : 'bg-transparent text-[var(--text-muted)] border-gray-700 hover:border-indigo-500/50'}" 
+          onclick="markCompleted(${ex.id})" 
+          title="${isCompleted ? 'Fjern godkjenning' : 'Marker som godkjent'}">
+          <i class="fas ${isCompleted ? 'fa-check' : 'fa-circle-notch'}"></i> 
+          Godkjent
+        </span>`;
 
         const html = `
         <div class="bg-[var(--card-bg)] border border-[var(--border-color)] transition hover:border-[var(--hover-border)] ${isCompleted ? 'border-[var(--primary-color)]' : ''}" id="card${ex.id}">
@@ -1126,8 +1139,30 @@
       const dotsEl = document.getElementById('exercise-dots');
       dotsEl.innerHTML = exercises.map(ex => {
         const isDone = localStorage.getItem('python_done_' + ex.id) === '1';
-        return `<div class="exercise-dot ${isDone ? 'completed' : ''}" title="Oppgave ${ex.id}: ${ex.title}">${ex.id}</div>`;
+        return `<div class="exercise-dot ${isDone ? 'completed' : ''} cursor-pointer" onclick="scrollToCard(${ex.id})" title="Gå til Oppgave ${ex.id}: ${ex.title}">${ex.id}</div>`;
       }).join('');
+    }
+
+    function markCompleted(id) {
+      const isDone = localStorage.getItem('python_done_' + id) === '1';
+      if (isDone) {
+        if (!confirm('Fjern "Godkjent" for Oppgave ' + id + '?')) return;
+        localStorage.removeItem('python_done_' + id);
+      } else {
+        localStorage.setItem('python_done_' + id, '1');
+      }
+      renderExercises();
+    }
+
+    function scrollToCard(id) {
+      const card = document.getElementById('card' + id);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.classList.add('ring-4', 'ring-indigo-500/50');
+        setTimeout(() => {
+          card.classList.remove('ring-4', 'ring-indigo-500/50');
+        }, 1500);
+      }
     }
 
     function resetProgress() {
@@ -1559,15 +1594,30 @@
 
       // Auto-mark as completed if AI gives positive feedback
       const lower = reply.toLowerCase();
-      const isPositive = (lower.includes('riktig') || lower.includes('bra') || lower.includes('korrekt') || lower.includes('flott') || lower.includes('bra gjort') || lower.includes('godkjent') || lower.includes('fungerer') || lower.includes('ser bra ut'))
-        && !lower.includes('feil') && !lower.includes('error') && !lower.includes('mangler') && !lower.includes('problem');
+      // Sanitize negation phrases like "ingen feil", "uten feil" so they don't block positive classification
+      const sanitized = lower
+        .replace(/ingen\s+feil/g, '')
+        .replace(/uten\s+feil/g, '')
+        .replace(/ikke\s+noe\s+feil/g, '')
+        .replace(/ingen\s+problemer?/g, '')
+        .replace(/uten\s+problemer?/g, '')
+        .replace(/ingen\s+mangler/g, '')
+        .replace(/uten\s+mangler/g, '')
+        .replace(/ikke\s+mangler/g, '');
+
+      const isPositive = (sanitized.includes('riktig') || sanitized.includes('bra') || sanitized.includes('korrekt') || sanitized.includes('flott') || sanitized.includes('bra gjort') || sanitized.includes('godkjent') || sanitized.includes('fungerer') || sanitized.includes('ser bra ut'))
+        && !sanitized.includes('feil') && !sanitized.includes('error') && !sanitized.includes('mangler') && !sanitized.includes('problem');
 
       if (isPositive && localStorage.getItem('python_done_' + id) !== '1') {
         localStorage.setItem('python_done_' + id, '1');
         updateProgress();
         // Show green badge without full re-render
         const badge = document.getElementById('completedBadge' + id);
-        if (badge) badge.classList.remove('hidden');
+        if (badge) {
+          badge.className = "cursor-pointer text-xs font-mono px-2 py-0.5 border transition duration-200 flex items-center gap-1 bg-indigo-500 text-black border-[var(--primary-color)] font-bold";
+          badge.innerHTML = '<i class="fas fa-check"></i> Godkjent';
+          badge.title = "Fjern godkjenning";
+        }
         const card = document.getElementById('card' + id);
         if (card) card.classList.add('ring-2', 'ring-green-300');
       }
