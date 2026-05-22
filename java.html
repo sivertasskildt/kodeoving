@@ -98,17 +98,33 @@
       min-height: 200px;
       max-height: 500px;
       padding: 1rem;
-      border-radius: 0;
-      resize: none;
+      border-radius: 4px;
+      resize: vertical; /* Allow vertical resize */
       border: 1px solid var(--border-color);
-      overflow-y: hidden;
-      line-height: 1.3;
+      overflow-y: auto; /* Enable scrollbar */
+      line-height: 1.4;
     }
 
     .code-input:focus {
       outline: none;
       border-color: #f97316;
       box-shadow: 0 0 0 1px #f97316;
+    }
+
+    /* Custom Scrollbar for code inputs */
+    .code-input::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .code-input::-webkit-scrollbar-track {
+      background: var(--input-bg);
+    }
+    .code-input::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    .code-input::-webkit-scrollbar-thumb:hover {
+      background: var(--hover-border);
     }
 
     .solution-box {
@@ -578,8 +594,20 @@
 
             <div id="generated-feedback"
               class="generator-feedback-box hidden">
-              <h4 class="font-bold text-[var(--primary-color)] mb-1">Tilbakemelding:</h4>
-              <div id="generated-feedback-text" class="ai-content text-sm text-[var(--text-color)]"></div>
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-bold text-[var(--primary-color)]"><i class="fas fa-robot mr-2"></i>Tilbakemelding:</h4>
+                <div class="flex gap-2">
+                  <button onclick="toggleCollapse('generated-feedback-wrapper', 'generated-feedback-chevron')" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs font-mono flex items-center gap-1" title="Minimer tilbakemelding">
+                    <i class="fas fa-chevron-up transition-transform duration-200" id="generated-feedback-chevron"></i> Minimer
+                  </button>
+                  <button onclick="document.getElementById('generated-feedback').style.display='none'" class="text-[var(--text-muted)] hover:text-red-500 transition text-xs font-mono flex items-center gap-1" title="Lukk tilbakemelding">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div id="generated-feedback-wrapper">
+                <div id="generated-feedback-text" class="ai-content text-sm text-[var(--text-color)]"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1091,17 +1119,37 @@ class Main {
             </div>
 
             <div id="ai-feedback-${ex.id}" class="ai-feedback-box">
-              <h4 class="font-bold feedback-heading mb-2"><i class="fas fa-robot mr-2"></i>Tilbakemelding:</h4>
-              <div id="ai-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-bold feedback-heading"><i class="fas fa-robot mr-2"></i>Tilbakemelding:</h4>
+                <div class="flex gap-2">
+                  <button onclick="toggleCollapse('ai-content-wrapper-${ex.id}', 'feedback-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs font-mono flex items-center gap-1" title="Minimer tilbakemelding">
+                    <i class="fas fa-chevron-up transition-transform duration-200" id="feedback-chevron-${ex.id}"></i> Minimer
+                  </button>
+                  <button onclick="document.getElementById('ai-feedback-${ex.id}').style.display='none'" class="text-[var(--text-muted)] hover:text-red-500 transition text-xs font-mono flex items-center gap-1" title="Lukk tilbakemelding">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div id="ai-content-wrapper-${ex.id}">
+                <div id="ai-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
+              </div>
             </div>
 
-             <div id="ai-explanation-${ex.id}" class="ai-feedback-box ai-explanation-box relative" style="display:none;">
-              <button onclick="document.getElementById('ai-explanation-${ex.id}').style.display='none'" 
-                class="absolute top-2 right-2 explanation-close-btn transition">
-                <i class="fas fa-times"></i>
-              </button>
-              <h4 class="font-bold explanation-heading mb-2"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
-              <div id="ai-explanation-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
+            <div id="ai-explanation-${ex.id}" class="ai-feedback-box ai-explanation-box relative" style="display:none;">
+              <div class="flex justify-between items-center mb-2">
+                <h4 class="font-bold explanation-heading"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
+                <div class="flex gap-2">
+                  <button onclick="toggleCollapse('ai-explanation-content-wrapper-${ex.id}', 'explanation-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs font-mono flex items-center gap-1" title="Minimer forklaring">
+                    <i class="fas fa-chevron-up transition-transform duration-200" id="explanation-chevron-${ex.id}"></i> Minimer
+                  </button>
+                  <button onclick="document.getElementById('ai-explanation-${ex.id}').style.display='none'" class="text-[var(--text-muted)] hover:text-red-500 transition text-xs font-mono flex items-center gap-1" title="Lukk forklaring">
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <div id="ai-explanation-content-wrapper-${ex.id}">
+                <div id="ai-explanation-content-${ex.id}" class="ai-content text-[var(--text-color)] text-sm leading-relaxed"></div>
+              </div>
             </div>
 
             <!-- AI Chat Area -->
@@ -1109,6 +1157,9 @@ class Main {
               <div class="ai-chat-header">
                 <span><i class="fa-regular fa-comments mr-2"></i>AI-veileder Chat</span>
                 <div class="flex gap-2">
+                  <button onclick="toggleCollapse('ai-chat-body-wrapper-${ex.id}', 'chat-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-white transition text-xs flex items-center gap-1" title="Minimer chat">
+                    <i class="fas fa-chevron-up transition-transform duration-200" id="chat-chevron-${ex.id}"></i> Minimer
+                  </button>
                   <button onclick="clearChat(${ex.id})" class="text-[var(--text-muted)] hover:text-red-500 transition text-xs font-mono" title="Tøm samtalehistorikk">
                     <i class="fas fa-trash-alt mr-1"></i> Tøm chat
                   </button>
@@ -1117,14 +1168,16 @@ class Main {
                   </button>
                 </div>
               </div>
-              <div id="ai-chat-messages-${ex.id}" class="ai-chat-messages">
-                <!-- Messages populated dynamically -->
-              </div>
-              <div class="ai-chat-input-area">
-                <textarea id="ai-chat-input-${ex.id}" class="ai-chat-input" placeholder="Still et spørsmål til oppgaven eller tilbakemeldingen..." onkeydown="handleChatKeyDown(${ex.id}, event)"></textarea>
-                <button id="ai-chat-send-${ex.id}" onclick="sendChatMessage(${ex.id})" class="ai-chat-send-btn" title="Send spørsmål">
-                  <i class="fas fa-paper-plane"></i>
-                </button>
+              <div id="ai-chat-body-wrapper-${ex.id}" class="flex flex-col w-full">
+                <div id="ai-chat-messages-${ex.id}" class="ai-chat-messages">
+                  <!-- Messages populated dynamically -->
+                </div>
+                <div class="ai-chat-input-area">
+                  <textarea id="ai-chat-input-${ex.id}" class="ai-chat-input" placeholder="Still et spørsmål til oppgaven eller tilbakemeldingen..." onkeydown="handleChatKeyDown(${ex.id}, event)"></textarea>
+                  <button id="ai-chat-send-${ex.id}" onclick="sendChatMessage(${ex.id})" class="ai-chat-send-btn" title="Send spørsmål">
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1147,7 +1200,31 @@ class Main {
     function saveCode(id, code) { localStorage.setItem('java_code_' + id, code); }
     function autoResize(textarea) {
       textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
+      const targetHeight = Math.min(textarea.scrollHeight, 500);
+      textarea.style.height = targetHeight + 'px';
+      textarea.style.overflowY = textarea.scrollHeight > 500 ? 'auto' : 'hidden';
+    }
+
+    function toggleCollapse(wrapperId, chevronId) {
+      const wrapper = document.getElementById(wrapperId);
+      const chevron = document.getElementById(chevronId);
+      if (!wrapper || !chevron) return;
+      
+      const isHidden = wrapper.style.display === 'none';
+      wrapper.style.display = isHidden ? '' : 'none';
+      
+      if (isHidden) {
+        chevron.classList.remove('fa-chevron-down');
+        chevron.classList.add('fa-chevron-up');
+        if (wrapperId.startsWith('ai-chat-body-wrapper-')) {
+          const id = wrapperId.replace('ai-chat-body-wrapper-', '');
+          const messagesDiv = document.getElementById(`ai-chat-messages-${id}`);
+          if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+      } else {
+        chevron.classList.remove('fa-chevron-up');
+        chevron.classList.add('fa-chevron-down');
+      }
     }
     function clearCode(id) {
       if (confirm("Slett koden?")) {
@@ -1319,6 +1396,16 @@ class Main {
       const reply = await callGemini(prompt);
       contentBox.innerHTML = formatAIResponse(reply);
       feedbackBox.style.display = 'block';
+
+      // Ensure expanded
+      const wrapper = document.getElementById(`ai-content-wrapper-${id}`);
+      if (wrapper) wrapper.style.display = '';
+      const chevron = document.getElementById(`feedback-chevron-${id}`);
+      if (chevron) {
+        chevron.classList.remove('fa-chevron-down');
+        chevron.classList.add('fa-chevron-up');
+      }
+
       btn.innerHTML = oldText;
       btn.disabled = false;
 
@@ -1384,6 +1471,15 @@ class Main {
       const prompt = `Forklar denne Java-oppgaven enkelt for en nybegynner, uten å gi koden: "${exercise.description.replace(/<[^>]*>?/gm, '')}"`;
       const reply = await callGemini(prompt);
       content.innerHTML = formatAIResponse(reply);
+
+      // Ensure expanded
+      const wrapper = document.getElementById(`ai-explanation-content-wrapper-${id}`);
+      if (wrapper) wrapper.style.display = '';
+      const chevron = document.getElementById(`explanation-chevron-${id}`);
+      if (chevron) {
+        chevron.classList.remove('fa-chevron-down');
+        chevron.classList.add('fa-chevron-up');
+      }
 
       // Add to chat history
       const descriptionText = exercise.description.replace(/<[^>]*>?/gm, '');
@@ -1597,6 +1693,15 @@ class Main {
       const prompt = `Du er Java-lærer. Oppgave: "${task}". Svar: """${code}""". Gi tilbakemelding.`;
       const reply = await callGemini(prompt);
       feedback.innerHTML = formatAIResponse(reply);
+
+      // Ensure expanded
+      const wrapper = document.getElementById('generated-feedback-wrapper');
+      if (wrapper) wrapper.style.display = '';
+      const chevron = document.getElementById('generated-feedback-chevron');
+      if (chevron) {
+        chevron.classList.remove('fa-chevron-down');
+        chevron.classList.add('fa-chevron-up');
+      }
     }
 
     document.addEventListener('DOMContentLoaded', renderExercises);
