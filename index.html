@@ -526,6 +526,15 @@
             </button>
           </div>
 
+          <div class="flex flex-col md:flex-row gap-2 mb-6">
+            <input type="text" id="custom-topic" placeholder="Eller spør om en helt spesifikk oppgave..." 
+              class="flex-1 bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] py-3 px-4 rounded leading-tight focus:outline-none focus:bg-[var(--card-bg)] focus:border-[var(--primary-color)]">
+            <button onclick="generateCustomExercise()"
+              class="bg-indigo-500 text-white px-6 py-3 font-bold hover:opacity-90 transition rounded whitespace-nowrap">
+              Spesiallag oppgave
+            </button>
+          </div>
+
           <!-- Generated Exercise Area -->
           <div id="generated-container" class="hidden bg-[var(--card-bg)] border border-[var(--border-color)] p-6">
             <h3 class="text-[var(--primary-color)] font-bold mb-2 uppercase text-sm tracking-wide">Din unike oppgave:
@@ -1738,6 +1747,15 @@
       textArea.innerHTML = formatAIResponse(exerciseText);
     }
 
+    async function generateCustomExercise() {
+      const customTopic = document.getElementById('custom-topic').value.trim();
+      if (!customTopic) {
+        alert("Vennligst skriv inn et tema eller en spesifikk oppgave.");
+        return;
+      }
+      generateExercise(customTopic);
+    }
+
     async function checkGeneratedCode() {
       const userCode = document.getElementById('generated-input').value;
       const taskDescription = document.getElementById('generated-container').dataset.currentTask;
@@ -1837,7 +1855,7 @@
       formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
       // Code blocks ```code```
-      formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-800 p-2 rounded text-[var(--text-color)] text-xs my-2 overflow-x-auto">$1</pre>');
+      formatted = formatted.replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-800 p-2 rounded text-gray-100 text-xs my-2 overflow-x-auto">$1</pre>');
 
       // Inline code `code`
       formatted = formatted.replace(/`([^`]+)`/g, '<code class="font-mono text-sm">$1</code>');
