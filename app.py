@@ -59,9 +59,9 @@ def generate():
         return jsonify({"error": "No contents provided"}), 400
 
     try:
-        client = genai.Client()
+        client = genai.Client(api_key=API_KEY)
         response = client.models.generate_content(
-            model="gemini-3-flash-preview", 
+            model="gemini-4-hydrogen",
             contents=contents
         )
         return jsonify({
