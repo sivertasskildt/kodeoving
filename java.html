@@ -4,7 +4,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Java Treningsleir</title>
+  <title>IN1010 Java Treningsleir – OOP-oppgaver og AI-veiledning | kode.sask.no</title>
+  <meta name="description" content="Gratis interaktive Java-oppgaver for IN1010 ved UiO. Tren til eksamen i objektorientert programmering (OOP), arv, interfaces, generics, lenkelister, rekursjon, tråder og Game of Life med AI-veiledning og fasit.">
+  <meta name="keywords" content="IN1010, IN1010 oppgaver, IN1010 eksamen, IN1010 Java, UiO IN1010, objektorientert programmering Java, Game of Life IN1010, tråder monitor Java, Java treningsleir, IN1000">
+  <meta name="author" content="Sivert Asskildt">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://kode.sask.no/java.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="nb_NO">
+  <meta property="og:site_name" content="kode.sask.no – IN1000 &amp; IN1010 Treningsleir">
+  <meta property="og:title" content="IN1010 Java Treningsleir – OOP-oppgaver og AI-veiledning">
+  <meta property="og:description" content="Gratis interaktive Java-oppgaver for IN1010 ved UiO. Øv på OOP, arv, interfaces, lenkelister, rekursjon, tråder og eksamensoppgaver med AI-veiledning og fasit.">
+  <meta property="og:url" content="https://kode.sask.no/java.html">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="IN1010 Java Treningsleir – OOP-oppgaver og AI-veiledning">
+  <meta name="twitter:description" content="Gratis interaktive Java-oppgaver for IN1010 ved UiO. Øv på OOP, arv, interfaces, tråder og eksamensoppgaver med AI-veiledning og fasit.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "kode.sask.no – IN1000 & IN1010 Treningsleir",
+        "url": "https://kode.sask.no/",
+        "inLanguage": "no"
+      },
+      {
+        "@type": "LearningResource",
+        "name": "IN1010 Java Treningsleir",
+        "alternateName": [
+          "Java Treningsleir",
+          "IN1010 oppgaver",
+          "IN1010 eksamensoppgaver"
+        ],
+        "description": "Gratis interaktive Java-oppgaver og eksamensforberedelser for IN1010 ved Universitetet i Oslo (UiO), med AI-veiledning, simulert kjøring og fasit.",
+        "url": "https://kode.sask.no/java.html",
+        "inLanguage": "no",
+        "isAccessibleForFree": true,
+        "educationalLevel": "Universitet / Høyskole",
+        "learningResourceType": "Øvingsoppgaver",
+        "programmingLanguage": "Java",
+        "teaches": [
+          "IN1010",
+          "Java",
+          "Objektorientert programmering",
+          "Arv og abstrakte klasser",
+          "Interfaces og polymorfisme",
+          "ArrayList og HashMap",
+          "Generics",
+          "Iterator og Iterable",
+          "Lenkelister og rekursjon",
+          "Tråder og Monitor",
+          "Game of Life"
+        ],
+        "about": {
+          "@type": "Course",
+          "name": "IN1010 – Objektorientert programmering",
+          "courseCode": "IN1010",
+          "provider": {
+            "@type": "CollegeOrUniversity",
+            "name": "Universitetet i Oslo"
+          }
+        },
+        "author": {
+          "@type": "Person",
+          "name": "Sivert Asskildt",
+          "url": "https://sivertasskildt.no"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Dekker oppgavene eksamensnivå i IN1010 ved UiO?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ja. Oppgavene i IN1010 Java Treningsleir dekker alt fra grunnleggende klasser og ArrayList til klassiske IN1010-temaer som arv, interfaces, generics, Iterator/Iterable, tråder med Monitor, Game of Life (Celle) og eksamensoppgaver med lenkelister og rekursjon."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hva er forskjellen på IN1000 og IN1010?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "IN1000 er innføringsemnet i Python ved UiO, mens IN1010 bygger videre med objektorientert programmering, datastrukturer, rekursjon og samtidighet i Java. På kode.sask.no kan du øve på både IN1000 i Python og IN1010 i Java."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Hvordan fungerer AI-veiledningen for Java-kode?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Med knappene Sjekk, Kjør, Forklar og Spør AI kan du få umiddelbar tilbakemelding på Java-koden din, simulert terminaloutput og hjelp fra en AI-veileder tilpasset IN1010-pensum, samt ubegrensede oppgaver i oppgavegeneratoren."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -466,29 +565,70 @@
     .output-simulator-box .terminal-output .t-red {
       color: #f87171;
     }
+
+    details.faq-item {
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-color);
+      padding: 0.75rem 1rem;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    details.faq-item[open] {
+      border-color: var(--primary-color);
+    }
+
+    details.faq-item summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+
+    details.faq-item::details-content {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    details.faq-item p {
+      margin-top: 0.65rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
   </style>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230a0a0a'/><text x='15' y='68' fill='%23f97316' font-family='monospace' font-size='60' font-weight='bold'>&gt;_</text></svg>">
 </head>
 
 <body class="bg-[var(--bg-color)] text-[var(--text-color)] pb-20 font-sans">
     <!-- Theme Toggle Button -->
-    <button id="theme-toggle" class="fixed bottom-6 left-6 text-[var(--text-color)] hover:scale-110 transition duration-200 flex items-center justify-center cursor-pointer z-50 text-2xl bg-transparent border-0 outline-none p-0" aria-label="Endre fargetema">
-        <i class="fa-regular fa-lightbulb"></i>
+    <button type="button" id="theme-toggle" class="fixed bottom-6 left-6 text-[var(--text-color)] hover:scale-110 transition duration-200 flex items-center justify-center cursor-pointer z-50 text-2xl bg-transparent border-0 outline-none p-0" aria-label="Endre fargetema">
+        <i class="fa-regular fa-lightbulb" aria-hidden="true"></i>
     </button>
 
   <!-- Header -->
   <header class="border-b border-[var(--border-color)] p-6 mb-8 bg-[var(--header-bg)]">
-    <div class="max-w-4xl mx-auto flex justify-between items-center">
+    <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div>
-        <h1 class="text-3xl font-bold tracking-tight"><i class="fa-brands fa-java mr-2"></i> Java Treningsleir </h1>
-        <p class="opacity-90 mt-1">Mestrer du OOP? Tren før eksamen! IN1010</p>
+        <h1 class="text-3xl font-bold tracking-tight"><i class="fa-brands fa-java mr-2" aria-hidden="true"></i>IN1010 – Java Treningsleir</h1>
+        <p class="opacity-90 mt-1">Interaktive Java-oppgaver i objektorientert programmering (OOP) før eksamen i IN1010 (UiO)</p>
       </div>
-      <div class="flex flex-col items-end gap-2">
-        <a href="index.html" class="border border-gray-700 hover:border-gray-400 text-white px-4 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center bg-[#111]">
-          <i class="fa-brands fa-python mr-2 text-lg"></i> Gå til Python
-        </a>
+      <div class="flex flex-col items-start md:items-end gap-2">
+        <nav aria-label="Kurs">
+          <ul class="flex flex-wrap items-center gap-2">
+            <li>
+              <a href="/" class="border border-gray-700 hover:border-gray-400 text-white px-3 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center bg-[#111]">
+                <i class="fa-brands fa-python mr-2 text-base" aria-hidden="true"></i>IN1000 (Python)
+              </a>
+            </li>
+            <li>
+              <a href="java.html" aria-current="page" class="border border-[var(--primary-color)] bg-orange-500 text-black font-bold px-3 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center">
+                <i class="fa-brands fa-java mr-2 text-base" aria-hidden="true"></i>IN1010 (Java)
+              </a>
+            </li>
+          </ul>
+        </nav>
         <div class="hidden md:block text-right text-xs opacity-80">
-          Eksamensforberedelser
+          Eksamensforberedelser for UiO-emner
         </div>
       </div>
     </div>
@@ -622,11 +762,54 @@
         </div>
       </div>
     </div>
+
+    <!-- Course Info & FAQ (SEO & Student Guide) -->
+    <section id="course-overview" class="bg-[var(--card-bg)] border border-[var(--border-color)] p-6 space-y-6 mt-12">
+      <div>
+        <h2 id="course-overview-heading" class="text-xl font-bold text-[var(--text-color)]">Om IN1010 Java Treningsleir (UiO)</h2>
+        <p class="mt-2 text-sm text-[var(--text-muted)] leading-relaxed">
+          IN1010 Java Treningsleir på kode.sask.no hjelper deg å øve til obliger og eksamen i <strong>IN1010 – Objektorientert programmering</strong> ved Universitetet i Oslo (UiO). Løs oppgaver i Java direkte i nettleseren, sjekk løsningen med AI, simuler terminaloutput, still spørsmål til AI-veilederen og sammenlign med fasit. Trenger du å repetere grunnleggende Python først? Gå til <a href="/" class="text-[var(--feedback-heading)] underline underline-offset-4 hover:opacity-80">IN1000 (Python)</a>.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-mono uppercase tracking-wider text-[var(--feedback-heading)] mb-3">Temaer og pensum i IN1010</h3>
+        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-[var(--text-muted)] list-disc pl-5">
+          <li>Klasser, konstruktører og innkapsling i Java</li>
+          <li><code>ArrayList</code>, <code>HashMap</code> og generiske beholdere (Generics)</li>
+          <li>Arv, abstrakte klasser, <code>interface</code> og polymorfisme</li>
+          <li><code>Iterator</code>, <code>Iterable</code> og egne datastrukturer</li>
+          <li>Lenkelister og rekursjon (inkl. eksamensoppgaver som Jernbane og Tog-Validere)</li>
+          <li>Tråder (concurrency), <code>Monitor</code> og Game of Life (<code>Celle</code>)</li>
+        </ul>
+      </div>
+
+      <section class="space-y-3">
+        <h3 class="text-sm font-mono uppercase tracking-wider text-[var(--feedback-heading)]">Ofte stilte spørsmål om IN1010 og IN1000</h3>
+        <details class="faq-item" name="faq">
+          <summary>Dekker oppgavene eksamensnivå i IN1010 ved UiO?</summary>
+          <p>Ja. Oppgavene i IN1010 Java Treningsleir dekker alt fra grunnleggende klasser og <code>ArrayList</code> til klassiske IN1010-temaer som arv, interfaces, generics, <code>Iterator</code>/<code>Iterable</code>, tråder med <code>Monitor</code>, Game of Life (<code>Celle</code>) og eksamensoppgaver med lenkelister og rekursjon.</p>
+        </details>
+        <details class="faq-item" name="faq">
+          <summary>Hva er forskjellen på IN1000 og IN1010?</summary>
+          <p>IN1000 er innføringsemnet i Python ved UiO, mens IN1010 bygger videre med objektorientert programmering, datastrukturer, rekursjon og samtidighet i Java. På kode.sask.no kan du øve på både <a href="/" class="text-[var(--feedback-heading)] underline underline-offset-4 hover:opacity-80">IN1000 (Python)</a> og IN1010 i Java.</p>
+        </details>
+        <details class="faq-item" name="faq">
+          <summary>Hvordan fungerer AI-veiledningen for Java-kode?</summary>
+          <p>Med knappene Sjekk, Kjør, Forklar og Spør AI kan du få umiddelbar tilbakemelding på Java-koden din, simulert terminaloutput og hjelp fra en AI-veileder tilpasset IN1010-pensum, samt ubegrensede oppgaver i oppgavegeneratoren.</p>
+        </details>
+      </section>
+    </section>
   </main>
 
-  <footer class="text-center mt-12 mb-8 border-t border-[var(--border-color)] pt-6 text-[var(--text-muted)] font-mono text-xs uppercase tracking-widest">
-    <p class="mb-2">Lykke til med kodingen!</p>
-    <p>© 2026 <a href="https://sivertasskildt.no" target="_blank" class="hover:text-[var(--text-color)] transition underline underline-offset-4">Sivert Asskildt</a></p>
+  <footer class="text-center mt-12 mb-8 border-t border-[var(--border-color)] pt-6 text-[var(--text-muted)] font-mono text-xs uppercase tracking-widest space-y-2">
+    <p>Lykke til med kodingen til IN1010 og IN1000!</p>
+    <p>
+      <a href="/" class="hover:text-[var(--text-color)] transition underline underline-offset-4">IN1000 (Python)</a>
+      <span aria-hidden="true"> · </span>
+      <a href="java.html" class="hover:text-[var(--text-color)] transition underline underline-offset-4">IN1010 (Java)</a>
+    </p>
+    <p>© 2026 <a href="https://sivertasskildt.no" target="_blank" rel="noopener" class="hover:text-[var(--text-color)] transition underline underline-offset-4">Sivert Asskildt</a></p>
   </footer>
 
   <script>
@@ -1129,7 +1312,7 @@ class Main {
 
             <div id="ai-feedback-${ex.id}" class="ai-feedback-box">
               <div class="flex justify-between items-center mb-2">
-                <h4 class="font-bold feedback-heading"><i class="fas fa-robot mr-2"></i>Tilbakemelding:</h4>
+                <h3 class="font-bold feedback-heading"><i class="fas fa-robot mr-2" aria-hidden="true"></i>Tilbakemelding:</h3>
                 <div class="flex gap-2">
                   <button onclick="toggleCollapse('ai-content-wrapper-${ex.id}', 'feedback-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs font-mono flex items-center gap-1" title="Minimer tilbakemelding">
                     <i class="fas fa-chevron-up transition-transform duration-200" id="feedback-chevron-${ex.id}"></i> Minimer
@@ -1146,7 +1329,7 @@ class Main {
 
             <div id="ai-explanation-${ex.id}" class="ai-feedback-box ai-explanation-box relative" style="display:none;">
               <div class="flex justify-between items-center mb-2">
-                <h4 class="font-bold explanation-heading"><i class="fas fa-lightbulb mr-2"></i>Forklaring:</h4>
+                <h3 class="font-bold explanation-heading"><i class="fas fa-lightbulb mr-2" aria-hidden="true"></i>Forklaring:</h3>
                 <div class="flex gap-2">
                   <button onclick="toggleCollapse('ai-explanation-content-wrapper-${ex.id}', 'explanation-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs font-mono flex items-center gap-1" title="Minimer forklaring">
                     <i class="fas fa-chevron-up transition-transform duration-200" id="explanation-chevron-${ex.id}"></i> Minimer

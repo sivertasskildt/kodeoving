@@ -1,13 +1,16 @@
-# Python Treningsleir + AI
+# IN1000 & IN1010 Treningsleir + AI (`kode.sask.no`)
 
-En interaktiv Python-øvingsapp med AI-veiledning drevet av Google Gemini.
+En interaktiv øvingsapp for **IN1000 (Python)** og **IN1010 (Java)** ved UiO med AI-veiledning drevet av Google Gemini.
+
+Nettside: [https://kode.sask.no](https://kode.sask.no) (`/` for IN1000 Python, `/java.html` for IN1010 Java).
 
 ## Funksjoner
 
-- 4 forhåndsdefinerte Python-oppgaver (klasser, lister, ordbøker, filbehandling)
-- AI-veiledning for å sjekke svarene dine
+- 35 Python-oppgaver på IN1000-nivå (`index.html`) og 11 Java-oppgaver på IN1010-nivå (`java.html`)
+- AI-veiledning for å sjekke svarene dine, simulere output, forklare oppgaver og chatte med AI-veileder
 - Uendelig oppgavegenerator for ekstra øving
-- Fasit for alle oppgaver
+- Fasit for alle oppgaver og lokal fremgangssporing
+- Søkemotoroptimalisering med `robots.txt`, `sitemap.xml`, Open Graph, JSON-LD og rene videresendinger (`/in1000`, `/in1010`)
 
 ## Oppsett
 
