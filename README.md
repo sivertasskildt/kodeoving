@@ -65,36 +65,6 @@ http://DIN_IP_ADRESSE:5000
 
 For eksempel: `http://192.168.1.100:5000`
 
-### Tilgang fra internett (dele med venner på andre nettverk)
-
-For å dele appen med noen som ikke er på samme WiFi, bruk **ngrok** for å lage en sikker tunnel:
-
-**1. Start Flask-serveren:**
-```bash
-python app.py
-```
-
-**2. I et nytt terminalvindu, start ngrok:**
-```bash
-ngrok http 5001
-```
-
-**3. Del URL-en:**
-
-Ngrok vil vise en URL som ser slik ut:
-```
-Forwarding    https://abc123.ngrok-free.app -> http://localhost:5001
-```
-
-Del `https://abc123.ngrok-free.app` med vennene dine! De kan åpne denne URL-en i nettleseren sin fra hvor som helst i verden.
-
-> [!NOTE]
-> - Gratis ngrok-URLer endres hver gang du starter ngrok på nytt
-> - Gratis tier har en advarsel-side før brukeren kommer til appen (klikk "Visit Site")
-> - Serveren må kjøre på Mac-en din for at ngrok-tunnelen skal fungere
-
-## Feilsøking
-
 ### Xcode-lisens
 
 Hvis du får en feilmelding om Xcode-lisens når du bruker Git:
