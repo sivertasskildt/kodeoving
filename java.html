@@ -4,6 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      var savedScheme = localStorage.getItem('color-scheme');
+      if (savedScheme === 'light' || savedScheme === 'dark') {
+        document.querySelector('meta[name="color-scheme"]').content = savedScheme;
+      }
+    } catch (e) {}
+  </script>
   <title>IN1010 Java Treningsleir – OOP-oppgaver og AI-veiledning | kode.sask.no</title>
   <meta name="description" content="Gratis interaktive Java-oppgaver for IN1010 ved UiO. Tren til eksamen i objektorientert programmering (OOP), arv, interfaces, generics, lenkelister, rekursjon, tråder og Game of Life med AI-veiledning og fasit.">
   <meta name="keywords" content="IN1010, IN1010 oppgaver, IN1010 eksamen, IN1010 Java, UiO IN1010, objektorientert programmering Java, Game of Life IN1010, tråder monitor Java, Java treningsleir, IN1000">
@@ -124,68 +133,393 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <style>
-    
         :root {
-            --bg-color: #0a0a0a;
-            --text-color: #e5e5e5;
-            --text-muted: #9ca3af;
-            --card-bg: #111111;
-            --border-color: #333333;
-            --header-bg: #050505;
-            --input-bg: #1e1e1e;
-            --input-text: #d4d4d4;
-            --solution-bg: #111111;
-            --solution-heading: #4ade80;
-            --feedback-bg: #111111;
-            --feedback-border: #f97316;
-            --feedback-heading: #fdba74;
-            --explanation-bg: #1e152a;
-            --explanation-border: #9333ea;
-            --explanation-heading: #c084fc;
-            --explanation-close: #c084fc;
-            --explanation-close-hover: #e9d5ff;
-            --generator-feedback-bg: #18181b;
-            --code-inline-bg: #2d3748;
-            --code-inline-text: #f472b6;
-            --hover-border: #555555;
-            --primary-color: #f97316;
-            --terminal-bg: #1e293b;
-            --terminal-header: #334155;
-            --terminal-text: #e2e8f0;
+            color-scheme: light dark;
+            --color-scheme: light;
+
+            /* Design tokens (light & dark values) */
+            --bg-color-light: #fafafa;
+            --bg-color-dark: #0a0a0a;
+            --text-color-light: #111111;
+            --text-color-dark: #e5e5e5;
+            --text-muted-light: #4b5563;
+            --text-muted-dark: #9ca3af;
+            --card-bg-light: #ffffff;
+            --card-bg-dark: #111111;
+            --border-color-light: #d1d5db;
+            --border-color-dark: #333333;
+            --header-bg-light: #f3f4f6;
+            --header-bg-dark: #050505;
+            --input-bg-light: #ffffff;
+            --input-bg-dark: #1e1e1e;
+            --input-text-light: #111111;
+            --input-text-dark: #d4d4d4;
+            --solution-bg-light: #f9fafb;
+            --solution-bg-dark: #111111;
+            --solution-heading-light: #15803d;
+            --solution-heading-dark: #4ade80;
+            --feedback-bg-light: #fff7ed;
+            --feedback-bg-dark: #111111;
+            --feedback-border-light: #c2410c;
+            --feedback-border-dark: #f97316;
+            --feedback-heading-light: #c2410c;
+            --feedback-heading-dark: #fdba74;
+            --explanation-bg-light: #f9f5ff;
+            --explanation-bg-dark: #1e152a;
+            --explanation-border-light: #9333ea;
+            --explanation-border-dark: #9333ea;
+            --explanation-heading-light: #6b21a8;
+            --explanation-heading-dark: #c084fc;
+            --explanation-close-light: #7e22ce;
+            --explanation-close-dark: #c084fc;
+            --explanation-close-hover-light: #581c87;
+            --explanation-close-hover-dark: #e9d5ff;
+            --generator-feedback-bg-light: #f8fafc;
+            --generator-feedback-bg-dark: #18181b;
+            --code-inline-bg-light: #e2e8f0;
+            --code-inline-bg-dark: #2d3748;
+            --code-inline-text-light: #be185d;
+            --code-inline-text-dark: #f472b6;
+            --hover-border-light: #6b7280;
+            --hover-border-dark: #666666;
+            --primary-color-light: #c2410c;
+            --primary-color-dark: #f97316;
+            --primary-contrast-light: #ffffff;
+            --primary-contrast-dark: #000000;
+            --accent-text-light: #c2410c;
+            --accent-text-dark: #fb923c;
+            --teal-accent-light: #0f766e;
+            --teal-accent-dark: #2dd4bf;
+            --purple-accent-light: #7e22ce;
+            --purple-accent-dark: #c084fc;
+            --diff-easy-light: #15803d;
+            --diff-easy-dark: #4ade80;
+            --diff-medium-light: #a16207;
+            --diff-medium-dark: #facc15;
+            --diff-hard-light: #b91c1c;
+            --diff-hard-dark: #f87171;
+            --diff-extra-light: #7e22ce;
+            --diff-extra-dark: #c084fc;
+            --chat-messages-bg-light: rgba(0, 0, 0, 0.03);
+            --chat-messages-bg-dark: rgba(0, 0, 0, 0.15);
+            --bulb-stroke-light: #262626;
+            --bulb-stroke-dark: #a3a3a3;
+            --terminal-bg-light: #f1f5f9;
+            --terminal-bg-dark: #1e293b;
+            --terminal-header-light: #cbd5e1;
+            --terminal-header-dark: #334155;
+            --terminal-text-light: #1e293b;
+            --terminal-text-dark: #e2e8f0;
+
+            /* Fallback: light mode active values */
+            --bg-color: var(--bg-color-light);
+            --text-color: var(--text-color-light);
+            --text-muted: var(--text-muted-light);
+            --card-bg: var(--card-bg-light);
+            --border-color: var(--border-color-light);
+            --header-bg: var(--header-bg-light);
+            --input-bg: var(--input-bg-light);
+            --input-text: var(--input-text-light);
+            --solution-bg: var(--solution-bg-light);
+            --solution-heading: var(--solution-heading-light);
+            --feedback-bg: var(--feedback-bg-light);
+            --feedback-border: var(--feedback-border-light);
+            --feedback-heading: var(--feedback-heading-light);
+            --explanation-bg: var(--explanation-bg-light);
+            --explanation-border: var(--explanation-border-light);
+            --explanation-heading: var(--explanation-heading-light);
+            --explanation-close: var(--explanation-close-light);
+            --explanation-close-hover: var(--explanation-close-hover-light);
+            --generator-feedback-bg: var(--generator-feedback-bg-light);
+            --code-inline-bg: var(--code-inline-bg-light);
+            --code-inline-text: var(--code-inline-text-light);
+            --hover-border: var(--hover-border-light);
+            --primary-color: var(--primary-color-light);
+            --primary-contrast: var(--primary-contrast-light);
+            --accent-text: var(--accent-text-light);
+            --teal-accent: var(--teal-accent-light);
+            --purple-accent: var(--purple-accent-light);
+            --diff-easy: var(--diff-easy-light);
+            --diff-medium: var(--diff-medium-light);
+            --diff-hard: var(--diff-hard-light);
+            --diff-extra: var(--diff-extra-light);
+            --chat-messages-bg: var(--chat-messages-bg-light);
+            --bulb-stroke: var(--bulb-stroke-light);
+            --terminal-bg: var(--terminal-bg-light);
+            --terminal-header: var(--terminal-header-light);
+            --terminal-text: var(--terminal-text-light);
         }
 
-        body.light {
-            --bg-color: #fafafa;
-            --text-color: #111111;
-            --text-muted: #4b5563;
-            --card-bg: #ffffff;
-            --border-color: #e5e7eb;
-            --header-bg: #f3f4f6;
-            --input-bg: #ffffff;
-            --input-text: #111111;
-            --solution-bg: #f9fafb;
-            --solution-heading: #15803d;
-            --feedback-bg: #fff7ed;
-            --feedback-border: #f97316;
-            --feedback-heading: #c2410c;
-            --explanation-bg: #f9f5ff;
-            --explanation-border: #9333ea;
-            --explanation-heading: #6b21a8;
-            --explanation-close: #7e22ce;
-            --explanation-close-hover: #581c87;
-            --generator-feedback-bg: #f8fafc;
-            --code-inline-bg: #e2e8f0;
-            --code-inline-text: #db2777;
-            --hover-border: #999999;
-            --terminal-bg: #f1f5f9;
-            --terminal-header: #cbd5e1;
-            --terminal-text: #1e293b;
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-scheme: dark;
+                --bg-color: var(--bg-color-dark);
+                --text-color: var(--text-color-dark);
+                --text-muted: var(--text-muted-dark);
+                --card-bg: var(--card-bg-dark);
+                --border-color: var(--border-color-dark);
+                --header-bg: var(--header-bg-dark);
+                --input-bg: var(--input-bg-dark);
+                --input-text: var(--input-text-dark);
+                --solution-bg: var(--solution-bg-dark);
+                --solution-heading: var(--solution-heading-dark);
+                --feedback-bg: var(--feedback-bg-dark);
+                --feedback-border: var(--feedback-border-dark);
+                --feedback-heading: var(--feedback-heading-dark);
+                --explanation-bg: var(--explanation-bg-dark);
+                --explanation-border: var(--explanation-border-dark);
+                --explanation-heading: var(--explanation-heading-dark);
+                --explanation-close: var(--explanation-close-dark);
+                --explanation-close-hover: var(--explanation-close-hover-dark);
+                --generator-feedback-bg: var(--generator-feedback-bg-dark);
+                --code-inline-bg: var(--code-inline-bg-dark);
+                --code-inline-text: var(--code-inline-text-dark);
+                --hover-border: var(--hover-border-dark);
+                --primary-color: var(--primary-color-dark);
+                --primary-contrast: var(--primary-contrast-dark);
+                --accent-text: var(--accent-text-dark);
+                --teal-accent: var(--teal-accent-dark);
+                --purple-accent: var(--purple-accent-dark);
+                --diff-easy: var(--diff-easy-dark);
+                --diff-medium: var(--diff-medium-dark);
+                --diff-hard: var(--diff-hard-dark);
+                --diff-extra: var(--diff-extra-dark);
+                --chat-messages-bg: var(--chat-messages-bg-dark);
+                --bulb-stroke: var(--bulb-stroke-dark);
+                --terminal-bg: var(--terminal-bg-dark);
+                --terminal-header: var(--terminal-header-dark);
+                --terminal-text: var(--terminal-text-dark);
+            }
+        }
+
+        :root:has(> head > meta[name="color-scheme"][content="dark"]) {
+            color-scheme: dark;
+            --color-scheme: dark;
+        }
+
+        :root:has(> head > meta[name="color-scheme"][content="light"]) {
+            color-scheme: light;
+            --color-scheme: light;
+        }
+
+        @supports (color: light-dark(white, black)) {
+            :root {
+                --bg-color: light-dark(var(--bg-color-light), var(--bg-color-dark));
+                --text-color: light-dark(var(--text-color-light), var(--text-color-dark));
+                --text-muted: light-dark(var(--text-muted-light), var(--text-muted-dark));
+                --card-bg: light-dark(var(--card-bg-light), var(--card-bg-dark));
+                --border-color: light-dark(var(--border-color-light), var(--border-color-dark));
+                --header-bg: light-dark(var(--header-bg-light), var(--header-bg-dark));
+                --input-bg: light-dark(var(--input-bg-light), var(--input-bg-dark));
+                --input-text: light-dark(var(--input-text-light), var(--input-text-dark));
+                --solution-bg: light-dark(var(--solution-bg-light), var(--solution-bg-dark));
+                --solution-heading: light-dark(var(--solution-heading-light), var(--solution-heading-dark));
+                --feedback-bg: light-dark(var(--feedback-bg-light), var(--feedback-bg-dark));
+                --feedback-border: light-dark(var(--feedback-border-light), var(--feedback-border-dark));
+                --feedback-heading: light-dark(var(--feedback-heading-light), var(--feedback-heading-dark));
+                --explanation-bg: light-dark(var(--explanation-bg-light), var(--explanation-bg-dark));
+                --explanation-border: light-dark(var(--explanation-border-light), var(--explanation-border-dark));
+                --explanation-heading: light-dark(var(--explanation-heading-light), var(--explanation-heading-dark));
+                --explanation-close: light-dark(var(--explanation-close-light), var(--explanation-close-dark));
+                --explanation-close-hover: light-dark(var(--explanation-close-hover-light), var(--explanation-close-hover-dark));
+                --generator-feedback-bg: light-dark(var(--generator-feedback-bg-light), var(--generator-feedback-bg-dark));
+                --code-inline-bg: light-dark(var(--code-inline-bg-light), var(--code-inline-bg-dark));
+                --code-inline-text: light-dark(var(--code-inline-text-light), var(--code-inline-text-dark));
+                --hover-border: light-dark(var(--hover-border-light), var(--hover-border-dark));
+                --primary-color: light-dark(var(--primary-color-light), var(--primary-color-dark));
+                --primary-contrast: light-dark(var(--primary-contrast-light), var(--primary-contrast-dark));
+                --accent-text: light-dark(var(--accent-text-light), var(--accent-text-dark));
+                --teal-accent: light-dark(var(--teal-accent-light), var(--teal-accent-dark));
+                --purple-accent: light-dark(var(--purple-accent-light), var(--purple-accent-dark));
+                --diff-easy: light-dark(var(--diff-easy-light), var(--diff-easy-dark));
+                --diff-medium: light-dark(var(--diff-medium-light), var(--diff-medium-dark));
+                --diff-hard: light-dark(var(--diff-hard-light), var(--diff-hard-dark));
+                --diff-extra: light-dark(var(--diff-extra-light), var(--diff-extra-dark));
+                --chat-messages-bg: light-dark(var(--chat-messages-bg-light), var(--chat-messages-bg-dark));
+                --bulb-stroke: light-dark(var(--bulb-stroke-light), var(--bulb-stroke-dark));
+                --terminal-bg: light-dark(var(--terminal-bg-light), var(--terminal-bg-dark));
+                --terminal-header: light-dark(var(--terminal-header-light), var(--terminal-header-dark));
+                --terminal-text: light-dark(var(--terminal-text-light), var(--terminal-text-dark));
+            }
+        }
+
+        @supports not (color: light-dark(white, black)) {
+            :root:has(> head > meta[name="color-scheme"][content="dark"]) {
+                --bg-color: var(--bg-color-dark);
+                --text-color: var(--text-color-dark);
+                --text-muted: var(--text-muted-dark);
+                --card-bg: var(--card-bg-dark);
+                --border-color: var(--border-color-dark);
+                --header-bg: var(--header-bg-dark);
+                --input-bg: var(--input-bg-dark);
+                --input-text: var(--input-text-dark);
+                --solution-bg: var(--solution-bg-dark);
+                --solution-heading: var(--solution-heading-dark);
+                --feedback-bg: var(--feedback-bg-dark);
+                --feedback-border: var(--feedback-border-dark);
+                --feedback-heading: var(--feedback-heading-dark);
+                --explanation-bg: var(--explanation-bg-dark);
+                --explanation-border: var(--explanation-border-dark);
+                --explanation-heading: var(--explanation-heading-dark);
+                --explanation-close: var(--explanation-close-dark);
+                --explanation-close-hover: var(--explanation-close-hover-dark);
+                --generator-feedback-bg: var(--generator-feedback-bg-dark);
+                --code-inline-bg: var(--code-inline-bg-dark);
+                --code-inline-text: var(--code-inline-text-dark);
+                --hover-border: var(--hover-border-dark);
+                --primary-color: var(--primary-color-dark);
+                --primary-contrast: var(--primary-contrast-dark);
+                --accent-text: var(--accent-text-dark);
+                --teal-accent: var(--teal-accent-dark);
+                --purple-accent: var(--purple-accent-dark);
+                --diff-easy: var(--diff-easy-dark);
+                --diff-medium: var(--diff-medium-dark);
+                --diff-hard: var(--diff-hard-dark);
+                --diff-extra: var(--diff-extra-dark);
+                --chat-messages-bg: var(--chat-messages-bg-dark);
+                --bulb-stroke: var(--bulb-stroke-dark);
+                --terminal-bg: var(--terminal-bg-dark);
+                --terminal-header: var(--terminal-header-dark);
+                --terminal-text: var(--terminal-text-dark);
+            }
+
+            :root:has(> head > meta[name="color-scheme"][content="light"]) {
+                --bg-color: var(--bg-color-light);
+                --text-color: var(--text-color-light);
+                --text-muted: var(--text-muted-light);
+                --card-bg: var(--card-bg-light);
+                --border-color: var(--border-color-light);
+                --header-bg: var(--header-bg-light);
+                --input-bg: var(--input-bg-light);
+                --input-text: var(--input-text-light);
+                --solution-bg: var(--solution-bg-light);
+                --solution-heading: var(--solution-heading-light);
+                --feedback-bg: var(--feedback-bg-light);
+                --feedback-border: var(--feedback-border-light);
+                --feedback-heading: var(--feedback-heading-light);
+                --explanation-bg: var(--explanation-bg-light);
+                --explanation-border: var(--explanation-border-light);
+                --explanation-heading: var(--explanation-heading-light);
+                --explanation-close: var(--explanation-close-light);
+                --explanation-close-hover: var(--explanation-close-hover-light);
+                --generator-feedback-bg: var(--generator-feedback-bg-light);
+                --code-inline-bg: var(--code-inline-bg-light);
+                --code-inline-text: var(--code-inline-text-light);
+                --hover-border: var(--hover-border-light);
+                --primary-color: var(--primary-color-light);
+                --primary-contrast: var(--primary-contrast-light);
+                --accent-text: var(--accent-text-light);
+                --teal-accent: var(--teal-accent-light);
+                --purple-accent: var(--purple-accent-light);
+                --diff-easy: var(--diff-easy-light);
+                --diff-medium: var(--diff-medium-light);
+                --diff-hard: var(--diff-hard-light);
+                --diff-extra: var(--diff-extra-light);
+                --chat-messages-bg: var(--chat-messages-bg-light);
+                --bulb-stroke: var(--bulb-stroke-light);
+                --terminal-bg: var(--terminal-bg-light);
+                --terminal-header: var(--terminal-header-light);
+                --terminal-text: var(--terminal-text-light);
+            }
+        }
+
+        html {
+            accent-color: var(--primary-color);
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* Theme toggle icon visibility follows <meta name="color-scheme"> immediately (no FOUC) */
+        #theme-toggle .theme-option-system {
+            display: inline-flex;
+        }
+        #theme-toggle .theme-option-light,
+        #theme-toggle .theme-option-dark {
+            display: none;
+        }
+        :root:has(> head > meta[name="color-scheme"][content="light"]) #theme-toggle .theme-option-system,
+        :root:has(> head > meta[name="color-scheme"][content="dark"]) #theme-toggle .theme-option-system {
+            display: none;
+        }
+        :root:has(> head > meta[name="color-scheme"][content="light"]) #theme-toggle .theme-option-light,
+        :root:has(> head > meta[name="color-scheme"][content="dark"]) #theme-toggle .theme-option-dark {
+            display: inline-flex;
+        }
+
+        .visually-hidden:where(:not(:focus-within, :active)) {
+            position: absolute !important;
+            clip-path: inset(50%) !important;
+            overflow: hidden !important;
+            width: 1px !important;
+            height: 1px !important;
+            margin: -1px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            white-space: nowrap !important;
+        }
+
+        .badge-diff-easy { border: 1px solid var(--diff-easy); color: var(--diff-easy); }
+        .badge-diff-medium { border: 1px solid var(--diff-medium); color: var(--diff-medium); }
+        .badge-diff-hard { border: 1px solid var(--diff-hard); color: var(--diff-hard); }
+        .badge-diff-extra { border: 1px solid var(--diff-extra); color: var(--diff-extra); }
+
+        .btn-outline-primary {
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: var(--primary-contrast);
+        }
+
+        .btn-outline-teal {
+            border: 1px solid var(--teal-accent);
+            color: var(--teal-accent);
+        }
+        .btn-outline-teal:hover {
+            background-color: var(--teal-accent);
+            color: var(--primary-contrast);
+        }
+
+        .btn-outline-purple {
+            border: 1px solid var(--purple-accent);
+            color: var(--purple-accent);
+        }
+        .btn-outline-purple:hover {
+            background-color: var(--purple-accent);
+            color: var(--primary-contrast);
+        }
+
+        .btn-outline-accent {
+            border: 1px solid var(--accent-text);
+            color: var(--accent-text);
+        }
+        .btn-outline-accent:hover {
+            background-color: var(--accent-text);
+            color: var(--primary-contrast);
+        }
+
+        .btn-outline-muted {
+            border: 1px solid var(--hover-border);
+            color: var(--text-muted);
+        }
+        .btn-outline-muted:hover {
+            background-color: var(--hover-border);
+            color: #ffffff;
+        }
+
+        @media (forced-colors: active) {
+            :where(a:any-link, button, input, select, textarea):focus-visible {
+                outline: 2px solid Highlight;
+                outline-offset: 2px;
+            }
+            .theme-bulb-stroke { stroke: CanvasText; }
+            .theme-bulb-dark { fill: Canvas; }
+            .theme-bulb-light { fill: CanvasText; }
         }
 
 
@@ -206,24 +540,32 @@
 
     .code-input:focus {
       outline: none;
-      border-color: #f97316;
-      box-shadow: 0 0 0 1px #f97316;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 1px var(--primary-color);
     }
 
-    /* Custom Scrollbar for code inputs */
-    .code-input::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
+    @supports (scrollbar-color: auto) {
+      .code-input {
+        scrollbar-color: var(--border-color) var(--input-bg);
+      }
     }
-    .code-input::-webkit-scrollbar-track {
-      background: var(--input-bg);
-    }
-    .code-input::-webkit-scrollbar-thumb {
-      background: var(--border-color);
-      border-radius: 4px;
-    }
-    .code-input::-webkit-scrollbar-thumb:hover {
-      background: var(--hover-border);
+
+    /* Legacy scrollbar fallback for older WebKit/Blink browsers */
+    @supports not (scrollbar-color: auto) {
+      .code-input::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .code-input::-webkit-scrollbar-track {
+        background: var(--input-bg);
+      }
+      .code-input::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 4px;
+      }
+      .code-input::-webkit-scrollbar-thumb:hover {
+        background: var(--hover-border);
+      }
     }
 
     .solution-box {
@@ -296,7 +638,7 @@
       display: inline-block;
       width: 1rem;
       height: 1rem;
-      border: 2px solid #ffffff;
+      border: 2px solid currentColor;
       border-radius: 50%;
       border-top-color: transparent;
       animation: spin 1s linear infinite;
@@ -363,11 +705,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
-      background-color: rgba(0, 0, 0, 0.15);
-    }
-    
-    body.light .ai-chat-messages {
-      background-color: rgba(0, 0, 0, 0.03);
+      background-color: var(--chat-messages-bg);
     }
     
     .chat-bubble {
@@ -388,14 +726,9 @@
     .chat-bubble-user {
       align-self: flex-end;
       background-color: var(--primary-color);
-      color: #000000;
+      color: var(--primary-contrast);
       border-bottom-right-radius: 0.1rem;
       font-weight: 500;
-    }
-    
-    body.light .chat-bubble-user {
-      background-color: var(--primary-color);
-      color: #000000;
     }
     
     .chat-bubble-model {
@@ -467,7 +800,7 @@
 
     .progress-bar-fill {
       height: 100%;
-      background: #f97316;
+      background: var(--primary-color);
       transition: width 0.4s ease;
     }
 
@@ -487,7 +820,7 @@
       font-size: 0.65rem;
       font-weight: 700;
       background: var(--bg-color);
-      color: #6b7280;
+      color: var(--text-muted);
       border: 1px solid var(--border-color);
       cursor: pointer;
       transition: all 0.2s;
@@ -495,15 +828,15 @@
     }
 
     .exercise-dot:hover {
-      border-color: #f97316;
-      color: #f97316;
+      border-color: var(--primary-color);
+      color: var(--primary-color);
       transform: scale(1.1);
     }
 
     .exercise-dot.completed {
-      background: #f97316;
-      color: #000;
-      border-color: #f97316;
+      background: var(--primary-color);
+      color: var(--primary-contrast);
+      border-color: var(--primary-color);
     }
 
     /* === Copy button === */
@@ -544,7 +877,7 @@
     }
 
     .output-simulator-box .terminal-header {
-      color: #64748b;
+      color: #94a3b8;
       font-size: 0.7rem;
       margin-bottom: 0.5rem;
       display: flex;
@@ -601,8 +934,27 @@
 
 <body class="bg-[var(--bg-color)] text-[var(--text-color)] pb-20 font-sans">
     <!-- Theme Toggle Button -->
-    <button type="button" id="theme-toggle" class="fixed bottom-6 left-6 text-[var(--text-color)] hover:scale-110 transition duration-200 flex items-center justify-center cursor-pointer z-50 text-2xl bg-transparent border-0 outline-none p-0" aria-label="Endre fargetema">
-        <i class="fa-regular fa-lightbulb" aria-hidden="true"></i>
+    <button type="button" id="theme-toggle"
+      class="fixed bottom-5 left-5 z-50 min-w-[36px] min-h-[36px] p-1.5 inline-flex items-center cursor-pointer bg-transparent border-0 text-[var(--text-color)] transition-transform duration-200 hover:scale-105 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--primary-color)]"
+      aria-label="System – fargetema følger enheten (klikk for å bytte)"
+      title="Fargetema: System (klikk for å bytte)">
+      <span class="theme-option-system items-center gap-2.5" aria-hidden="true">
+        <svg class="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="none">
+          <path class="theme-bulb-dark" fill="#111111" d="M 12 2.5 A 6.5 6.5 0 0 0 5.5 9 C 5.5 11.8 7.2 13.5 8.4 15 C 8.9 15.6 9.2 16.2 9.3 17 H 12 Z" />
+          <path class="theme-bulb-dark" fill="#111111" d="M 12 18.75 H 9.5 V 20.25 A 1.5 1.5 0 0 0 11 21.75 H 12 Z" />
+          <path class="theme-bulb-light" fill="#ffffff" d="M 12 2.5 A 6.5 6.5 0 0 1 18.5 9 C 18.5 11.8 16.8 13.5 15.6 15 C 15.1 15.6 14.8 16.2 14.7 17 H 12 Z" />
+          <path class="theme-bulb-light" fill="#ffffff" d="M 12 18.75 H 14.5 V 20.25 A 1.5 1.5 0 0 1 13 21.75 H 12 Z" />
+          <path class="theme-bulb-stroke" stroke="var(--bulb-stroke)" stroke-width="1.6" stroke-linejoin="round" d="M 9.3 17 H 14.7 C 14.8 16.2 15.1 15.6 15.6 15 C 16.8 13.5 18.5 11.8 18.5 9 A 6.5 6.5 0 1 0 5.5 9 C 5.5 11.8 7.2 13.5 8.4 15 C 8.9 15.6 9.2 16.2 9.3 17 Z" />
+          <path class="theme-bulb-stroke" stroke="var(--bulb-stroke)" stroke-width="1.6" stroke-linejoin="round" d="M 9.5 18.75 H 14.5 V 20.25 A 1.5 1.5 0 0 1 13 21.75 H 11 A 1.5 1.5 0 0 1 9.5 20.25 Z" />
+        </svg>
+        <span class="text-[11px] font-sans font-medium uppercase tracking-[0.22em] text-[var(--text-muted)] select-none">System</span>
+      </span>
+      <span class="theme-option-light items-center" aria-hidden="true">
+        <i class="fa-solid fa-lightbulb text-2xl"></i>
+      </span>
+      <span class="theme-option-dark items-center" aria-hidden="true">
+        <i class="fa-regular fa-lightbulb text-2xl"></i>
+      </span>
     </button>
 
   <!-- Header -->
@@ -616,12 +968,12 @@
         <nav aria-label="Kurs">
           <ul class="flex flex-wrap items-center gap-2">
             <li>
-              <a href="/" class="border border-gray-700 hover:border-gray-400 text-white px-3 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center bg-[#111]">
+              <a href="/" class="border border-[var(--border-color)] hover:border-[var(--hover-border)] text-[var(--text-color)] px-3 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center bg-[var(--card-bg)]">
                 <i class="fa-brands fa-python mr-2 text-base" aria-hidden="true"></i>IN1000 (Python)
               </a>
             </li>
             <li>
-              <a href="java.html" aria-current="page" class="border border-[var(--primary-color)] bg-orange-500 text-black font-bold px-3 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center">
+              <a href="java.html" aria-current="page" class="border border-[var(--primary-color)] bg-[var(--primary-color)] text-[var(--primary-contrast)] font-bold px-3 py-2 font-mono text-xs uppercase tracking-wider transition flex items-center">
                 <i class="fa-brands fa-java mr-2 text-base" aria-hidden="true"></i>IN1010 (Java)
               </a>
             </li>
@@ -641,11 +993,11 @@
     <div id="progress-dashboard">
       <div class="flex justify-between items-center mb-2">
         <div class="flex items-center gap-2">
-          <i class="fas fa-chart-line text-orange-500"></i>
+          <i class="fas fa-chart-line text-[var(--primary-color)]" aria-hidden="true"></i>
           <span class="font-bold text-[var(--text-color)] text-sm">Din fremgang</span>
           <span id="progress-label" class="text-xs text-[var(--text-muted)] font-medium">0 / 11 godkjent</span>
         </div>
-        <button onclick="resetProgress()" class="text-xs text-[var(--text-muted)] hover:text-red-400 transition"
+        <button onclick="resetProgress()" class="text-xs text-[var(--text-muted)] hover:text-red-500 transition"
           title="Nullstill fremgang">
           <i class="fas fa-undo mr-1"></i>Nullstill
         </button>
@@ -660,7 +1012,7 @@
     <div class="flex flex-col md:flex-row justify-center items-center mb-8 gap-4">
       <div class="bg-[var(--card-bg)] border border-[var(--border-color)] p-1 inline-flex">
         <button onclick="showSection('premade')" id="tab-premade"
-          class="px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 bg-orange-500 text-black border-r border-[var(--border-color)]">
+          class="px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 bg-[var(--primary-color)] text-[var(--primary-contrast)] font-bold border-r border-[var(--border-color)]">
           <i class="fas fa-list-ol mr-2"></i> IN1010 Oppgaver
         </button>
         <button onclick="showSection('generator')" id="tab-generator"
@@ -681,7 +1033,7 @@
         class="bg-[var(--card-bg)] border border-[var(--border-color)]">
         <div class="p-8">
           <div class="flex items-center mb-6">
-            <div class="bg-orange-500 p-3 rounded-full mr-4">
+            <div class="bg-[var(--primary-color)] text-[var(--primary-contrast)] p-3 rounded-full mr-4">
               <i class="fas fa-infinity text-2xl"></i>
             </div>
             <div>
@@ -695,7 +1047,7 @@
               Velg vanskelighetsgrad:
             </label>
             <select id="difficulty"
-              class="block w-full bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-[var(--card-bg)] focus:border-[var(--primary-color)]">
+              class="block w-full bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] py-2 px-4 pr-8 rounded leading-tight focus:bg-[var(--card-bg)] focus:border-[var(--primary-color)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--primary-color)]">
               <option value="Lett"> Lett (Grunnleggende)</option>
               <option value="Medium" selected> Medium (Oblig-nivå)</option>
               <option value="Vanskelig"> Vanskelig (Eksamen)</option>
@@ -722,9 +1074,9 @@
 
           <div class="flex flex-col md:flex-row gap-2 mb-6">
             <input type="text" id="custom-topic" placeholder="Eller spør om en helt spesifikk oppgave..." 
-              class="flex-1 bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] py-3 px-4 rounded leading-tight focus:outline-none focus:bg-[var(--card-bg)] focus:border-[var(--primary-color)]">
+              class="flex-1 bg-[var(--bg-color)] border border-[var(--border-color)] text-[var(--text-color)] py-3 px-4 rounded leading-tight focus:bg-[var(--card-bg)] focus:border-[var(--primary-color)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--primary-color)]">
             <button onclick="generateCustomExercise()"
-              class="bg-orange-500 text-black px-6 py-3 font-bold hover:opacity-90 transition rounded whitespace-nowrap">
+              class="bg-[var(--primary-color)] text-[var(--primary-contrast)] px-6 py-3 font-bold hover:opacity-90 transition rounded whitespace-nowrap">
               Spesiallag oppgave
             </button>
           </div>
@@ -737,7 +1089,7 @@
               placeholder="// Skriv din Java-løsning her..."></textarea>
 
             <button onclick="checkGeneratedCode()"
-              class="border border-[var(--primary-color)] text-orange-500 hover:bg-orange-500 hover:text-black font-mono text-sm uppercase tracking-wider py-3 px-6 transition duration-200">
+              class="btn-outline-primary font-mono text-sm uppercase tracking-wider py-3 px-6 transition duration-200">
               <i class="fas fa-check-circle mr-2"></i> Sjekk løsning
             </button>
 
@@ -1241,18 +1593,18 @@ class Main {
 
       exercises.forEach(ex => {
         let diffColor = "border border-[var(--text-muted)] text-[var(--text-muted)]";
-        if (ex.difficulty === "Lett") diffColor = "border border-green-500 text-green-500";
-        if (ex.difficulty === "Medium") diffColor = "border border-yellow-500 text-yellow-500";
-        if (ex.difficulty === "Hard") diffColor = "border border-red-500 text-red-500";
-        if (ex.difficulty === "Ekstra Vanskelig") diffColor = "border border-purple-500 text-purple-500";
+        if (ex.difficulty === "Lett") diffColor = "badge-diff-easy";
+        if (ex.difficulty === "Medium") diffColor = "badge-diff-medium";
+        if (ex.difficulty === "Hard") diffColor = "badge-diff-hard";
+        if (ex.difficulty === "Ekstra Vanskelig") diffColor = "badge-diff-extra";
 
         const savedCode = localStorage.getItem('java_code_' + ex.id) || '';
         const isCompleted = localStorage.getItem('java_done_' + ex.id) === '1';
         const completedBadge = `<span id="completedBadge${ex.id}" 
           class="cursor-pointer text-xs font-mono px-2 py-0.5 border transition duration-200 flex items-center gap-1 rounded-sm
           ${isCompleted 
-            ? 'bg-orange-500 text-black border-[var(--primary-color)] font-bold' 
-            : 'bg-transparent text-[var(--text-muted)] border-gray-700 hover:border-orange-500/50'}" 
+            ? 'bg-[var(--primary-color)] text-[var(--primary-contrast)] border-[var(--primary-color)] font-bold' 
+            : 'bg-transparent text-[var(--text-muted)] border-[var(--border-color)] hover:border-[var(--primary-color)]'}" 
           onclick="markCompleted(${ex.id})" 
           title="${isCompleted ? 'Fjern godkjenning' : 'Marker som godkjent'}">
           <i class="fas ${isCompleted ? 'fa-check' : 'fa-circle-notch'}"></i> 
@@ -1261,14 +1613,14 @@ class Main {
 
         const html = `
         <div class="bg-[var(--card-bg)] border border-[var(--border-color)] transition hover:border-[var(--hover-border)] ${isCompleted ? 'border-[var(--primary-color)]' : ''}" id="card${ex.id}">
-          <div class="p-6 border-b border-gray-800">
+          <div class="p-6 border-b border-[var(--border-color)]">
             <div class="flex justify-between items-start mb-4">
               <div class="flex items-center gap-3 flex-wrap">
                 <h2 class="text-xl font-bold text-[var(--text-color)]">Oppgave ${ex.id}: ${ex.title}</h2>
                 <span class="${diffColor} text-xs font-mono px-2 py-0.5 uppercase tracking-wider">${ex.difficulty}</span>
                 ${completedBadge}
               </div>
-              <span class="border border-[var(--primary-color)] text-orange-500 text-xs font-mono px-2 py-0.5 uppercase tracking-wide shrink-0">${ex.topic}</span>
+              <span class="border border-[var(--primary-color)] text-[var(--primary-color)] text-xs font-mono px-2 py-0.5 uppercase tracking-wide shrink-0">${ex.topic}</span>
             </div>
             <div class="mb-4 text-[var(--text-color)] opacity-85 leading-relaxed font-sans text-sm" id="desc${ex.id}">${ex.description}</div>
 
@@ -1277,19 +1629,19 @@ class Main {
 
             <div class="flex flex-wrap gap-2 justify-between">
               <div class="flex gap-2 flex-wrap">
-                <button onclick="checkCodeWithAI(${ex.id})" class="border border-[var(--primary-color)] text-orange-500 hover:bg-orange-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
+                <button onclick="checkCodeWithAI(${ex.id})" class="btn-outline-primary font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
                   <i class="fas fa-magic mr-2"></i> Sjekk
                 </button>
-                <button onclick="simulateOutput(${ex.id})" class="border border-teal-500 text-teal-500 hover:bg-teal-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
+                <button onclick="simulateOutput(${ex.id})" class="btn-outline-teal font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
                   <i class="fas fa-terminal mr-2"></i> ▶ Kjør
                 </button>
-                <button onclick="explainTaskWithAI(${ex.id})" class="border border-purple-500 text-purple-500 hover:bg-purple-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
+                <button onclick="explainTaskWithAI(${ex.id})" class="btn-outline-purple font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
                   <i class="fa-regular fa-lightbulb mr-2"></i> Forklar
                 </button>
-                <button onclick="toggleChat(${ex.id})" class="border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
+                <button onclick="toggleChat(${ex.id})" class="btn-outline-accent font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200 flex items-center">
                   <i class="fa-regular fa-comments mr-2"></i> Spør AI
                 </button>
-                <button onclick="toggleSolution('sol${ex.id}', this)" class="border border-gray-500 text-[var(--text-muted)] hover:bg-gray-500 hover:text-black font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200">
+                <button onclick="toggleSolution('sol${ex.id}', this)" class="btn-outline-muted font-mono text-xs uppercase tracking-wider py-2 px-4 transition duration-200">
                   <i class="fas fa-eye mr-2"></i> Se fasit
                 </button>
               </div>
@@ -1305,7 +1657,7 @@ class Main {
               <div class="terminal-header">
                 <i class="fas fa-terminal"></i>
                 <span>Simulert output</span>
-                <button onclick="document.getElementById('outputBox${ex.id}').style.display='none'" style="margin-left:auto; color:#64748b; background:none; border:none; cursor:pointer;"><i class="fas fa-times"></i></button>
+                <button onclick="document.getElementById('outputBox${ex.id}').style.display='none'" style="margin-left:auto; color:#94a3b8; background:none; border:none; cursor:pointer;"><i class="fas fa-times"></i></button>
               </div>
               <div class="terminal-output" id="outputText${ex.id}">...</div>
             </div>
@@ -1349,13 +1701,13 @@ class Main {
               <div class="ai-chat-header">
                 <span><i class="fa-regular fa-comments mr-2"></i>AI-veileder Chat</span>
                 <div class="flex gap-2">
-                  <button onclick="toggleCollapse('ai-chat-body-wrapper-${ex.id}', 'chat-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-white transition text-xs flex items-center gap-1" title="Minimer chat">
+                  <button onclick="toggleCollapse('ai-chat-body-wrapper-${ex.id}', 'chat-chevron-${ex.id}')" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs flex items-center gap-1" title="Minimer chat">
                     <i class="fas fa-chevron-up transition-transform duration-200" id="chat-chevron-${ex.id}"></i> Minimer
                   </button>
                   <button onclick="clearChat(${ex.id})" class="text-[var(--text-muted)] hover:text-red-500 transition text-xs font-mono" title="Tøm samtalehistorikk">
                     <i class="fas fa-trash-alt mr-1"></i> Tøm chat
                   </button>
-                  <button onclick="toggleChat(${ex.id})" class="text-[var(--text-muted)] hover:text-white transition text-xs" title="Lukk chat">
+                  <button onclick="toggleChat(${ex.id})" class="text-[var(--text-muted)] hover:text-[var(--text-color)] transition text-xs" title="Lukk chat">
                     <i class="fas fa-times"></i>
                   </button>
                 </div>
@@ -1377,7 +1729,7 @@ class Main {
           <div id="sol${ex.id}" class="solution-box p-6">
             <div class="flex justify-between items-center mb-2">
               <h3 class="font-bold solution-heading">Løsning:</h3>
-              <button onclick="copySolution(${ex.id})" class="text-xs text-[var(--text-muted)] hover:text-green-700 transition"><i class="fas fa-copy mr-1"></i>Kopier fasit</button>
+              <button onclick="copySolution(${ex.id})" class="text-xs text-[var(--text-muted)] hover:text-[var(--solution-heading)] transition"><i class="fas fa-copy mr-1"></i>Kopier fasit</button>
             </div>
             <pre class="code-display mb-4" id="solPre${ex.id}">${ex.solution}</pre>
           </div>
@@ -1469,7 +1821,7 @@ class Main {
       if (!code.trim()) { alert('Skriv koden din først!'); return; }
 
       box.style.display = 'block';
-      out.innerHTML = '<span style="color:#64748b"> Simulerer kjøring...</span>';
+      out.innerHTML = '<span style="color:#94a3b8"> Simulerer kjøring...</span>';
 
       const prompt = `Du er en Java-kompilator og runtime-simulator. Gitt denne Java-koden, vis BARE hva terminalen ville ha skrevet ut (System.out.println osv.). Ikke forklar, ikke vis koden. Vis kun den rå output-teksten nøyaktig som terminalen ville vist den. Hvis koden ikke kompilerer, skriv "COMPILE ERROR: [årsak]". Kode:\n\`\`\`java\n${code}\n\`\`\``;
 
@@ -1535,11 +1887,11 @@ class Main {
       const btnGen = document.getElementById('tab-generator');
 
       if (sectionId === 'premade') {
-        btnPremade.className = "px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 bg-orange-500 text-black border-r border-[var(--border-color)]";
+        btnPremade.className = "px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 bg-[var(--primary-color)] text-[var(--primary-contrast)] font-bold border-r border-[var(--border-color)]";
         btnGen.className = "px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 text-[var(--text-muted)] hover:text-[var(--text-color)]";
       } else {
         btnPremade.className = "px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 text-[var(--text-muted)] hover:text-[var(--text-color)] border-r border-[var(--border-color)]";
-        btnGen.className = "px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 bg-orange-500 text-black";
+        btnGen.className = "px-6 py-2 font-mono text-xs uppercase tracking-wider transition-colors duration-200 bg-[var(--primary-color)] text-[var(--primary-contrast)] font-bold";
       }
     }
 
@@ -1551,6 +1903,12 @@ class Main {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
         });
+        if (response.status === 429) {
+          return "For mange forespørsler på kort tid. Vent litt og prøv igjen.";
+        }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         return data.candidates[0].content.parts[0].text;
       } catch (e) {
@@ -1643,7 +2001,7 @@ class Main {
         // Show green badge without full re-render
         const badge = document.getElementById('completedBadge' + id);
         if (badge) {
-          badge.className = "cursor-pointer text-xs font-mono px-2 py-0.5 border transition duration-200 flex items-center gap-1 bg-orange-500 text-black border-[var(--primary-color)] font-bold";
+          badge.className = "cursor-pointer text-xs font-mono px-2 py-0.5 border transition duration-200 flex items-center gap-1 rounded-sm bg-[var(--primary-color)] text-[var(--primary-contrast)] border-[var(--primary-color)] font-bold";
           badge.innerHTML = '<i class="fas fa-check"></i> Godkjent';
           badge.title = "Fjern godkjenning";
         }
@@ -1797,7 +2155,7 @@ class Main {
       const messagesDiv = document.getElementById(`ai-chat-messages-${id}`);
       const loadingBubble = document.createElement('div');
       loadingBubble.className = 'chat-bubble chat-bubble-model font-sans opacity-70';
-      loadingBubble.innerHTML = '<span class="loading-spinner border-orange-500"></span> Tenker...';
+      loadingBubble.innerHTML = '<span class="loading-spinner"></span> Tenker...';
       messagesDiv.appendChild(loadingBubble);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
@@ -1812,7 +2170,13 @@ class Main {
           loadingBubble.remove();
         }
 
-        if (!response.ok) throw new Error('API returnerte feil');
+        if (!response.ok) {
+          if (response.status === 429) {
+            alert('For mange forespørsler på kort tid. Vent litt før du sender flere meldinger.');
+            return;
+          }
+          throw new Error('API returnerte feil');
+        }
 
         const data = await response.json();
         if (data.candidates && data.candidates[0].content) {
@@ -1926,25 +2290,62 @@ class Main {
   
         // --- THEME TOGGLE LOGIC ---
         const themeToggleBtn = document.getElementById('theme-toggle');
-        const currentTheme = localStorage.getItem('theme') || 'dark';
-        
-        if (currentTheme === 'light') {
-            document.body.classList.add('light');
-            themeToggleBtn.innerHTML = '<i class="fa-solid fa-lightbulb"></i>';
-        } else {
-            themeToggleBtn.innerHTML = '<i class="fa-regular fa-lightbulb"></i>';
+        const colorSchemeMeta = document.querySelector('meta[name="color-scheme"]');
+        const themeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function getStoredColorScheme() {
+            try {
+                const value = localStorage.getItem('color-scheme');
+                return (value === 'light' || value === 'dark') ? value : null;
+            } catch {
+                return null;
+            }
         }
 
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('light');
-            let theme = 'dark';
-            if (document.body.classList.contains('light')) {
-                theme = 'light';
-                themeToggleBtn.innerHTML = '<i class="fa-solid fa-lightbulb"></i>';
+        function applyColorScheme(scheme) {
+            colorSchemeMeta.content = scheme || 'light dark';
+            if (scheme === 'light') {
+                themeToggleBtn.setAttribute('aria-label', 'Fargetema: Lyst tema (klikk for å bytte)');
+                themeToggleBtn.setAttribute('title', 'Fargetema: Lyst (klikk for å bytte)');
+            } else if (scheme === 'dark') {
+                themeToggleBtn.setAttribute('aria-label', 'Fargetema: Mørkt tema (klikk for å bytte)');
+                themeToggleBtn.setAttribute('title', 'Fargetema: Mørkt (klikk for å bytte)');
             } else {
-                themeToggleBtn.innerHTML = '<i class="fa-regular fa-lightbulb"></i>';
+                themeToggleBtn.setAttribute('aria-label', 'System – fargetema følger enheten (klikk for å bytte)');
+                themeToggleBtn.setAttribute('title', 'Fargetema: System (klikk for å bytte)');
             }
-            localStorage.setItem('theme', theme);
+        }
+
+        function getNextColorScheme(current) {
+            const osPrefersDark = themeQuery.matches;
+            if (!current) {
+                return osPrefersDark ? 'light' : 'dark';
+            }
+            if (current === 'light') {
+                return osPrefersDark ? 'dark' : null;
+            }
+            return osPrefersDark ? null : 'light';
+        }
+
+        applyColorScheme(getStoredColorScheme());
+
+        themeToggleBtn.addEventListener('click', () => {
+            const next = getNextColorScheme(getStoredColorScheme());
+            try {
+                if (next) {
+                    localStorage.setItem('color-scheme', next);
+                } else {
+                    localStorage.removeItem('color-scheme');
+                }
+            } catch {}
+            applyColorScheme(next);
+        });
+
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'color-scheme') {
+                const updated = (event.newValue === 'light' || event.newValue === 'dark') ? event.newValue : null;
+                applyColorScheme(updated);
+            }
         });
     </script>
 </body>

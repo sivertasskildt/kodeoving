@@ -122,6 +122,10 @@ Systeminnstillinger → Nettverk → Brannmur → Alternativer
 
 ## Teknologi
 
-- **Backend**: Python, Flask
-- **Frontend**: HTML, Tailwind CSS, JavaScript
+- **Backend**: Python, Flask (med rate limiting og opprinnelses-/lengdevalidering på `/api/generate`)
+- **Frontend**: HTML, Tailwind CSS, JavaScript (med automatisk systemtema, lyst og mørkt tema)
 - **AI**: Google Gemini API
+
+## Lisens
+
+Dette prosjektet er lisensiert under [MIT-lisensen](LICENSE).
